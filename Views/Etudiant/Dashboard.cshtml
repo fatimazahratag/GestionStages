@@ -1,0 +1,234 @@
+﻿@model GestionStages.Models.Etudiant
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Dashboardi";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/etudiant/dashboard.css" asp-append-version="true" />
+
+
+<div class="container-fluid">
+    <h2 class="mb-4">Bienvenue, <span class="text-gold">@Model.NomComplet</span> 👋</h2>
+
+    <div class="dashboard-grid">
+        <div class="cards-container">
+            <div class="card-row">
+                <div class="stat-card">
+                    <strong>🎓 Filière</strong>
+                    <p>@Model.Filiere</p>
+                </div>
+                <div class="stat-card">
+                    <strong>📁 Nombre de stages</strong>
+                    <p>@ViewBag.TotalStages</p>
+                </div>
+                <div class="stat-card">
+                    <strong>📄 Dernière demande de document</strong>
+                    <p>@ViewBag.DerniereDemandeDoc</p>
+                </div>
+
+            </div>
+
+            <div class="card-row">
+                <div class="stat-card">
+                    <strong>📌 Statut du sujet</strong>
+                    <p>@ViewBag.StatutSujet</p>
+                </div>
+
+
+                <div class="stat-card">
+                    <strong>📝 Note finale de la soutenance</strong>
+                    <p>@ViewBag.NoteFinale</p>
+                </div>
+
+                <div class="stat-card">
+                    <strong>📅 Soutenance</strong>
+                    <p>@ViewBag.SoutenanceInfo</p>
+                </div>
+            </div>
+            
+
+        </div>
+
+        <div class="calendar-side">
+            <div class="simple-calendar">
+                <div class="calendar-controls">
+                    <select id="calendarMonth"></select>
+                    <select id="calendarYear"></select>
+                </div>
+                <div class="calendar-grid" id="calendarDays"></div>
+                <div class="calendar-grid" id="calendarDates"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+   
+
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/fr.js"></script>
+<script>
+    const monthSelect = document.getElementById('calendarMonth');
+    const yearSelect = document.getElementById('calendarYear');
+    const calendarDays = document.getElementById('calendarDays');
+    const calendarDates = document.getElementById('calendarDates');
+
+    const months = [
+        "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+        "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    ];
+
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+
+    function generateYearOptions(start, end) {
+        for (let year = start; year <= end; year++) {
+            const option = document.createElement("option");
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+    }
+
+    function generateMonthOptions() {
+        months.forEach((month, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.textContent = month;
+            monthSelect.appendChild(option);
+        });
+    }
+
+    function renderCalendar(month, year) {
+        calendarDays.innerHTML = '';
+        calendarDates.innerHTML = '';
+
+        const days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+        days.forEach(day => {
+            const div = document.createElement("div");
+            div.classList.add("calendar-day");
+            div.textContent = day;
+            calendarDays.appendChild(div);
+        });
+
+        const firstDay = new Date(year, month, 1).getDay() || 7;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 1; i < firstDay; i++) {
+            const empty = document.createElement("div");
+            calendarDates.appendChild(empty);
+        }
+
+        for (let date = 1; date <= daysInMonth; date++) {
+            const div = document.createElement("div");
+            div.classList.add("calendar-date");
+            div.textContent = date;
+
+            if (
+                date === today.getDate() &&
+                month === today.getMonth() &&
+                year === today.getFullYear()
+            ) {
+                div.classList.add("today");
+            }
+
+            calendarDates.appendChild(div);
+        }
+    }
+
+    generateMonthOptions();
+    generateYearOptions(2020, 2030);
+
+    monthSelect.value = currentMonth;
+    yearSelect.value = currentYear;
+
+    renderCalendar(currentMonth, currentYear);
+
+    monthSelect.addEventListener('change', () => {
+        currentMonth = parseInt(monthSelect.value);
+        renderCalendar(currentMonth, currentYear);
+    });
+
+    yearSelect.addEventListener('change', () => {
+        currentYear = parseInt(yearSelect.value);
+        renderCalendar(currentMonth, currentYear);
+    });
+</script>
+
+
+<script>
+    document.querySelectorAll('.circular-progress').forEach(el => {
+        const value = parseInt(el.getAttribute('data-percentage'));
+        const circle = el.querySelectorAll('circle')[1];
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (value / 100) * circumference;
+
+        circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDashoffset = offset;
+        el.querySelector('.percentage').textContent = `${value}%`;
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('leaderboardChart').getContext('2d');
+
+    const labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.LeaderboardLabels));
+    const data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.LeaderboardData));
+
+    new Chart(ctx, {
+        type: 'bar', 
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Note finale',
+                data: data,
+                backgroundColor: ['#FFD700','#C0C0C0','#CD7F32'], 
+                borderColor: ['#B8860B','#A9A9A9','#8B4513'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Top 3 étudiants par note finale'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 20 
+                }
+            }
+        }
+    });
+</script>
+<style>
+    .stat-card p {
+        font-weight: normal;
+        font-size: 20px;
+    }
+
+    .leaderboard-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .leaderboard-card li {
+        padding: 5px 0;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+    

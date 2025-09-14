@@ -1,0 +1,68 @@
+﻿@model GestionStages.Models.ViewModels.SujetViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Mon Sujet";
+}
+
+<div class="container mt-4">
+    <h2>📑 Sujet de Soutenance</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="card p-4 shadow-sm rounded-3">
+       
+
+        <form asp-action="AjouterSujet" method="post">
+            <input type="hidden" asp-for="NomEncadrant" />
+            <div class="mb-3">
+                <label>Encadrant</label>
+                <input class="form-control" value="@Model.NomEncadrant" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label>Nom du Sujet</label>
+                <input asp-for="NomSujet" class="form-control" />
+                <span asp-validation-for="NomSujet" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-gold px-4">✅ Valider</button>
+        </form>
+
+
+        @if (Model.Note.HasValue)
+        {
+            <div class="mt-3 alert alert-info">
+                <strong>Note finale :</strong> @Model.Note.Value / 20
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .btn-gold {
+        background-color: #E8C872;
+        color: white;
+        font-weight: bold;
+        border-radius: 30px;
+        padding: 0.6rem 1.5rem;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: #c3a654;
+        }
+</style>

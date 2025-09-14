@@ -1,0 +1,159 @@
+﻿@model List<GestionStages.Models.ViewModels.MesStagesViewModel>
+
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Mes Stages";
+}
+
+<style>
+    :root {
+        --gold: #E8C872;
+        --dark: #1C1C1E;
+        --light-gray: #f9f9f9;
+        --shadow: rgba(0, 0, 0, 0.08);
+        --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        font-family: var(--font-primary);
+        background-color: var(--light-gray);
+    }
+
+    h2 {
+        color: var(--dark);
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .stage-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 8px 24px var(--shadow);
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .stage-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .stage-table thead {
+            background-color: var(--gold);
+            color: white;
+        }
+
+        .stage-table th,
+        .stage-table td {
+            padding: 0.8rem;
+            text-align: center;
+        }
+
+        .stage-table tbody tr {
+            background-color: #fff;
+            transition: background-color 0.2s ease;
+        }
+
+            .stage-table tbody tr:hover {
+                background-color: #fdf6e3;
+            }
+
+    .badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+    .badge-success {
+        /* background-color: #28a745; */
+        color: #1C1C1E;
+    }
+
+    .badge-warning {
+        color: #1C1C1E;
+    }
+
+    .btn-gold {
+        background-color: var(--gold);
+        color: white;
+        font-weight: bold;
+        border-radius: 30px;
+        padding: 0.6rem 1.5rem;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-gold:hover {
+            background-color: #c3a654;
+            color: white;
+        }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+
+<div class="stage-container">
+    <h2>📁 Mes Stages</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            Vous n'avez pas encore de stage enregistré.
+        </div>
+    }
+    else
+    {
+        <table class="stage-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Sujet</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>État</th>
+                    <th>Encadrant</th>
+                    <th>Organisme</th>
+                    <th>Ville</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var stage in Model)
+                {
+                    <tr>
+                        <td>@stage.TypeStage</td>
+                        <td>@stage.Theme</td>
+                        <td>@stage.DateDebut.ToString("dd/MM/yyyy")</td>
+                        <td>@stage.DateFin.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (stage.Etat == "Terminé")
+                            {
+                                <span class="badge badge-success">✅ Terminé</span>
+                            }
+                            else if (stage.Etat == "En cours")
+                            {
+                                <span class="badge badge-primary">⏳ En cours</span>
+                            }
+                            else // En attente
+                            {
+                                <span class="badge badge-warning">⏳ En attente de confirmation</span>
+                            }
+                        </td>
+
+                        <td>@stage.NomEnseignant</td>
+                        <td>@stage.NomOrganisme</td>
+                        <td>@stage.VilleOrganisme</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <div class="text-center mt-4">
+        <a href="/Etudiant/AjouterDemandeStage" class="btn-gold">➕ Demander un nouveau stage</a>
+    </div>
+</div>

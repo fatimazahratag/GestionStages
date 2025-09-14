@@ -1,0 +1,9 @@
+﻿:root {
+    --primary-color: #A98BDB;
+    --secondary-color: #F7B1AB;
+    --background-color: #FFF9F3;
+    --text-color: #333333;
+    --light-gray: #f0f0f0;
+    --border-radius: 8px;
+    --font-family: 'Segoe UI', sans-serif;
+}

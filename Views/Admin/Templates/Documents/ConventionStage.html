@@ -1,0 +1,136 @@
+﻿<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* A4 page container */
+    .page {
+        width: 21cm;
+        min-height: 29.7cm; /* A4 height */
+        margin: 1cm auto;
+        padding: 2cm;
+        box-sizing: border-box;
+        position: relative; /* for absolute positioning of signatures */
+        line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .header img {
+            height: 100px;
+        }
+
+        .header .center {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+    /* Titles */
+    h2, h3, h4 {
+        text-align: center;
+        margin: 5px 0;
+    }
+
+    /* Horizontal line */
+    hr {
+        border: 1px solid #000;
+        margin: 15px 0;
+    }
+
+    /* Paragraphs */
+    p {
+        margin: 10px 0;
+        text-align: justify;
+    }
+
+    /* Lists */
+    ul {
+        margin: 10px 0 10px 20px;
+    }
+
+    /* Tables */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+        table th, table td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+    /* Signature area at bottom */
+    .signatures {
+        position: absolute;
+        bottom: 2cm;
+        width: calc(100% - 4cm);
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .signatures p {
+            margin: 0;
+        }
+
+    .signature-center {
+        text-align: center;
+        flex-grow: 1;
+    }
+</style>
+<div class="page">
+    <div class="header">
+        <img src="{{LogoPath}}" alt="Logo ENCG">
+        <div class="center">
+            <h4>Université Mohammed Premier</h4>
+            <h4>École Nationale de Commerce et de Gestion – Oujda</h4>
+            <h5>Service des Affaires Étudiantes</h5>
+        </div>
+        <img src="{{LogoPath2}}" alt="Logo Entreprise">
+    </div>
+
+    <h2>CONVENTION DE STAGE</h2>
+    <hr>
+
+    <p>
+        La présente convention est conclue entre les parties suivantes afin de définir les modalités et conditions du stage à effectuer par l’étudiant(e) dans le cadre de sa formation académique :
+    </p>
+
+    <p>
+        <b>Entre :</b> L’École Nationale de Commerce et de Gestion – Oujda<br>
+        <b>Et :</b> L’entreprise <b>{{NomOrganisme}}</b><br>
+        <b>Et :</b> L’étudiant(e) <b>{{NomComplet}}</b>
+    </p>
+
+    <p><b>Objet :</b> Encadrer le stage de l’étudiant(e) pour l’année académique <b>{{Annee}}</b>, conformément aux exigences pédagogiques de l’École.</p>
+
+    <h3>Conditions du stage :</h3>
+    <ul>
+        <li><b>Période :</b> Du <b>{{DateDebut}}</b> au <b>{{DateFin}}</b></li>
+        <li><b>Lieu :</b> {{Adresse}}</li>
+        <li><b>Encadrement :</b> Encadré(e) par le responsable universitaire <b>{{EncadrantUniv}}</b></li>
+        <li><b>Assurance :</b> Couverture obligatoire fournie par l’École</li>
+    </ul>
+
+    <p>
+        Cette convention formalise les engagements de chaque partie et assure le bon déroulement du stage dans le respect des règles académiques et professionnelles.
+    </p>
+
+    <div class="signatures">
+        <p>Étudiant(e) : ___________________________</p>
+        &nbsp; </br>
+        <p>Encadrant Universitaire : ___________________________</p>
+        &nbsp; </br>
+
+        <p>Responsable Entreprise : ___________________________</p>
+    </div>
+</div>

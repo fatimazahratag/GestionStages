@@ -1,0 +1,126 @@
+﻿@model IEnumerable<GestionStages.Models.Document>
+
+@{
+    Layout = "_LayoutAdmin";
+    var globalDeadline = Model.FirstOrDefault(d => d.TypeDocument == "Rapport Final")?.DateLimiteRapportFinal;
+}
+
+<h2 class="mb-4" style="color:#4b3b2b;"><i class="fas fa-file-alt"></i> Rapports Finaux</h2>
+
+<!-- Global Deadline Form -->
+<form asp-action="SetGlobalDeadline" method="post" class="mb-4 d-flex align-items-center gap-2">
+    @Html.AntiForgeryToken()
+    <label>📅 Date limite pour tous les rapports finaux :</label>
+    <input type="date" name="deadline"
+           value="@Model.FirstOrDefault(d => d.TypeDocument == "Rapport Final")?.DateLimiteRapportFinal?.ToString("yyyy-MM-dd")"
+           class="form-select-sm" />
+    <button type="submit" class="btn-status">💾 Enregistrer</button>
+</form>
+
+<table class="table table-hover shadow-sm rounded" style="background-color:#fff; border:1px solid #e0e0e0;">
+    <thead style="background-color:#4b3b2b; color:white;">
+        <tr>
+            <th>Étudiant</th>
+            <th>Type Document</th>
+            <th>Date dépôt</th>
+            <th>Date Limite</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model.Where(d => d.TypeDocument == "Rapport Final"))
+        {
+            var isLate = r.DateDepot > r.DateLimiteRapportFinal;
+            <tr class="@(isLate ? "table-danger" : "")">
+                <td>@r.Etudiant.NomComplet</td>
+                <td>@r.TypeDocument</td>
+                <td>@r.DateDepot.ToShortDateString()</td>
+                <td>@r.DateLimiteRapportFinal?.ToShortDateString()</td>
+                <td>
+                    <form asp-action="ChangerStatutRapport" method="post" class="d-flex align-items-center gap-2">
+                        <input type="hidden" name="id" value="@r.IdDocument" />
+                        <select name="statut" class="form-select-sm">
+                            <option value="Soumis" selected="@("Soumis" == r.Statut)">Soumis</option>
+                            <option value="Accepté" selected="@("Accepté" == r.Statut)">Accepté</option>
+                            <option value="Refusé" selected="@("Refusé" == r.Statut)">Refusé</option>
+                        </select>
+                        <button type="submit" class="btn-status"><i class="fas fa-check"></i></button>
+                    </form>
+                </td>
+                <td>
+                    <a asp-action="GenererDocument" asp-route-id="@r.IdDocument" class="btn-pdf mb-1">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    body {
+        background-color: #f9f7f1;
+        font-family: 'Segoe UI', sans-serif;
+        color: #333;
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+    }
+
+        table tbody tr:hover {
+            background-color: #fff4e6 !important;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+    .form-select-sm {
+        min-width: 130px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 4px 8px;
+    }
+
+    /* Buttons */
+    .btn-status {
+        background-color: #4b3b2b;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-status:hover {
+            background-color: #6b5040;
+            color: #fff;
+        }
+
+    .btn-pdf {
+        background-color: #d9534f;
+        color: white;
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+
+        .btn-pdf:hover {
+            background-color: #c9302c;
+        }
+
+    .table-danger {
+        background-color: #f8d7da !important;
+    }
+</style>

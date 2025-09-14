@@ -1,0 +1,26 @@
+﻿@model GestionStages.Models.Enseignant
+
+<h2>Bienvenue @Model.NomEnseignant</h2>
+
+<table>
+    <tr>
+        <th>Email :</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Téléphone :</th>
+        <td>@Model.Telephone</td>
+    </tr>
+    <tr>
+        <th>Département Attaché :</th>
+        <td>@Model.DepartementAttache</td>
+    </tr>
+    <tr>
+        <th>Filière :</th>
+        <td>@Model.Filiere</td>
+    </tr>
+</table>
+
+<p>
+    <a asp-controller="Auth" asp-action="Logout">Se déconnecter</a>
+</p>

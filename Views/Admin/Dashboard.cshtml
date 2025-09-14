@@ -1,0 +1,186 @@
+﻿@model GestionStages.Models.Admin
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Dashboard Admin";
+}
+
+<div class="container-fluid mt-4">
+
+    <!-- Header / Hero -->
+    <div class="row mb-4">
+        <div class="col-md-12 text-center">
+            <h2>👋 Bonjour, @Model.NomComplet</h2>
+            <p class="lead text-secondary">Bienvenue sur votre tableau de bord administratif</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light-brown text-center p-3">
+                <i class="fas fa-user-graduate fa-2x text-gold mb-2"></i>
+                <h5>Étudiants</h5>
+                <p class="display-6">@ViewBag.CountEtudiants</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light-brown text-center p-3">
+                <i class="fas fa-chalkboard-teacher fa-2x text-gold mb-2"></i>
+                <h5>Enseignants</h5>
+                <p class="display-6">@ViewBag.CountEnseignants</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light-brown text-center p-3">
+                <i class="fas fa-file-alt fa-2x text-gold mb-2"></i>
+                <h5>Documents soumis</h5>
+                <p class="display-6">@ViewBag.CountDocuments</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light-brown text-center p-3">
+                <i class="fas fa-calendar-check fa-2x text-gold mb-2"></i>
+                <h5>Soutenances</h5>
+                <p class="display-6">@ViewBag.CountSoutenances</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5 class="card-title text-brown">📊 Répartition des Étudiants par Niveau</h5>
+                <canvas id="chartEtudiants"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5 class="card-title text-brown">📈 Stages par Filière</h5>
+                <canvas id="chartStages"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5 class="card-title text-brown">📄 Documents par Statut</h5>
+                <canvas id="chartDocuments"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    <h4 class="text-brown">⚠️ Alertes</h4>
+    <div class="alert alert-warning mt-2" role="alert">
+        @ViewBag.LateReports rapports finaux sont en retard. <a href="/Admin/RapportsList">Voir détails</a>
+    </div>
+
+    <!-- Upcoming Deadlines -->
+    <h4 class="text-brown mt-4">📅 Prochains délais</h4>
+    <ul class="list-group mb-5">
+        @foreach (var doc in ViewBag.UpcomingDeadlines)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                @doc.Etudiant.NomComplet - @doc.TypeDocument
+                <span class="badge bg-danger rounded-pill">@doc.DateLimiteRapportFinal?.ToString("dd/MM/yyyy")</span>
+            </li>
+        }
+    </ul>
+
+    <!-- Recent Documents Table -->
+    <h4 class="text-brown">📋 Dernières actions</h4>
+    <table class="table table-hover shadow-sm rounded mt-3">
+        <thead style="background-color:#4b3b2b; color:white;">
+            <tr>
+                <th>Étudiant</th>
+                <th>Document</th>
+                <th>Statut</th>
+                <th>Date dépôt</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in ViewBag.RecentDocuments)
+            {
+                <tr>
+                    <td>@d.Etudiant.NomComplet</td>
+                    <td>@d.TypeDocument</td>
+                    <td>@d.Statut</td>
+                    <td>@d.DateDepot.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<!-- Chart.js Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const etudiantsCtx = document.getElementById('chartEtudiants');
+    new Chart(etudiantsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['1ère année', '2ème année', '3ème année'],
+            datasets: [{
+                data: [@ViewBag.Etudiants1A, @ViewBag.Etudiants2A, @ViewBag.Etudiants3A],
+                backgroundColor: ['#8d6e63', '#a1887f', '#d7ccc8']
+            }]
+        }
+    });
+
+    const stagesCtx = document.getElementById('chartStages');
+    new Chart(stagesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Informatique', 'Gestion', 'Marketing'],
+            datasets: [{
+                label: 'Stages',
+                data: [@ViewBag.StagesInfo, @ViewBag.StagesGestion, @ViewBag.StagesMarketing],
+                backgroundColor: '#ffca28'
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    const docsCtx = document.getElementById('chartDocuments');
+    new Chart(docsCtx, {
+        type: 'pie',
+        data: {
+            labels: ['En attente', 'En préparation', 'Prêt'],
+            datasets: [{
+                data: [@ViewBag.DocEnAttente, @ViewBag.DocEnPreparation, @ViewBag.DocPret],
+                backgroundColor: ['#f0ad4e','#4b3b2b','#d9534f']
+            }]
+        }
+    });
+</script>
+
+<style>
+    body {
+        background-color: #f9f7f1;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .text-gold {
+        color: #d4af37;
+    }
+
+    .text-brown {
+        color: #4b3b2b;
+    }
+
+    .bg-light-brown {
+        background-color: #f5f0e6;
+    }
+
+    .card-title {
+        font-weight: 600;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #fff4e6;
+    }
+
+    .list-group-item {
+        font-weight: 500;
+    }
+</style>

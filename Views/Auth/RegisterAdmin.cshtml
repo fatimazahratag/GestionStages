@@ -1,0 +1,52 @@
+﻿@model GestionStages.Models.ViewModels.RegisterAdminViewModel
+@{
+    ViewData["Title"] = "Créer un compte Admin";
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="~/css/register-admin.css" />
+</head>
+
+<div class="register-card">
+    <h2>@ViewData["Title"]</h2>
+
+    <form asp-action="RegisterAdmin" method="post" novalidate>
+        <div class="form-stack">
+            <div class="form-group">
+                <label asp-for="NomComplet"></label>
+                <input asp-for="NomComplet" class="form-control" />
+                <span asp-validation-for="NomComplet" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" class="form-control" />
+                <span asp-validation-for="Email" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Telephone"></label>
+                <input asp-for="Telephone" class="form-control" />
+                <span asp-validation-for="Telephone" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MotDePasse"></label>
+                <input asp-for="MotDePasse" type="password" class="form-control" />
+                <span asp-validation-for="MotDePasse" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmerMotDePasse"></label>
+                <input asp-for="ConfirmerMotDePasse" type="password" class="form-control" />
+                <span asp-validation-for="ConfirmerMotDePasse" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Créer un compte</button>
+    </form>
+
+    <div class="text-center">
+        <p>Déjà un compte ? <a asp-controller="Auth" asp-action="Login" asp-route-role="Admin">Se connecter</a></p>
+    </div>
+</div>

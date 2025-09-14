@@ -1,0 +1,162 @@
+﻿@model GestionStages.Models.ViewModels.RegisterEtudiantViewModel
+@{
+    ViewData["Title"] = "Créer un compte Étudiant";
+    Layout = null; 
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/register-etudiant.css" />
+</head>
+<div class="step-container">
+    <div class="step-indicator">
+        <div class="step active">1</div>
+        <div class="line"></div>
+        <div class="step" id="step-2">2</div>
+    </div>
+
+    <form asp-action="RegisterEtudiant" method="post" id="registerForm">
+        <div class="form-step step-1 active">
+            <h2>Étape 1 : Informations de connexion</h2>
+
+            <div class="form-group">
+                <label asp-for="CNE"></label>
+                <input asp-for="CNE" type="text" />
+                <span asp-validation-for="CNE" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MotDePasse"></label>
+                <input asp-for="MotDePasse" type="password" />
+                <span asp-validation-for="MotDePasse" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmerMotDePasse"></label>
+                <input asp-for="ConfirmerMotDePasse" type="password" />
+                <span asp-validation-for="ConfirmerMotDePasse" class="field-validation-error"></span>
+            </div>
+
+            <button type="button" class="btn-next">Suivant</button>
+        </div>
+
+        <div class="form-step step-2">
+            <h2>Étape 2 : Informations personnelles</h2>
+
+            <div class="form-group">
+                <label asp-for="NomComplet"></label>
+                <input asp-for="NomComplet" type="text" />
+                <span asp-validation-for="NomComplet" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" />
+                <span asp-validation-for="Email" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Telephone"></label>
+                <input asp-for="Telephone" type="tel" />
+                <span asp-validation-for="Telephone" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Filiere"></label>
+                <input asp-for="Filiere" type="text" />
+                <span asp-validation-for="Filiere" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Niveau"></label>
+                <input asp-for="Niveau" type="text" />
+                <span asp-validation-for="Niveau" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Module"></label>
+                <input asp-for="Module" type="text" />
+                <span asp-validation-for="Module" class="field-validation-error"></span>
+            </div>
+            <div class="form-step step-3">
+                <h2>Récapitulatif</h2>
+                <div id="recap-container">
+                    <script>
+                        const nextBtn = document.querySelector('.btn-next');
+                        const prevBtns = document.querySelectorAll('.btn-previous');
+                        const steps = document.querySelectorAll('.form-step');
+                        const indicators = document.querySelectorAll('.step');
+                        let currentStep = 0;
+
+                        function showStep(index) {
+                            steps.forEach((step, i) => {
+                                step.classList.remove('active');
+                                if (i === index) step.classList.add('active');
+                            });
+
+                            indicators.forEach((ind, i) => {
+                                ind.classList.toggle('active', i <= index);
+                            });
+
+                            currentStep = index;
+
+                            if (index === 2) generateRecap();
+                        }
+
+                        nextBtn.addEventListener('click', () => {
+                            showStep(1);
+                        });
+
+                        prevBtns.forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                showStep(currentStep - 1);
+                            });
+                        });
+
+                        function generateRecap() {
+                            const form = document.getElementById('registerForm');
+                            const recap = document.getElementById('recap-container');
+                            const data = new FormData(form);
+
+                            recap.innerHTML = '';
+                            for (let [key, value] of data.entries()) {
+                                if (key === '__RequestVerificationToken') continue;
+                                recap.innerHTML += `<p><strong>${key}</strong>: ${value}</p>`;
+                            }
+                        }
+                    </script>
+                </div>
+
+                <button type="button" class="btn-previous">Précédent</button>
+                <button type="submit" class="btn-submit">Valider</button>
+            </div>
+
+            <button type="button" class="btn-previous">Précédent</button>
+            <button type="submit" class="btn-submit">Créer un compte</button>
+           
+        </div>
+
+    </form>
+    <div class="text-center mt-4">
+        <p>Déjà un compte ? <a asp-controller="Auth" asp-action="Login" asp-route-role="Etudiant">Se connecter</a></p>
+    </div>
+</div>
+
+<script>
+    const nextBtn = document.querySelector('.btn-next');
+    const prevBtn = document.querySelector('.btn-previous');
+    const step1 = document.querySelector('.step-1');
+    const step2 = document.querySelector('.step-2');
+    const stepIndicator = document.getElementById('step-2');
+
+    nextBtn.addEventListener('click', () => {
+        step1.classList.remove('active');
+        step2.classList.add('active');
+        stepIndicator.classList.add('active');
+    });
+
+    prevBtn.addEventListener('click', () => {
+        step2.classList.remove('active');
+        step1.classList.add('active');
+        stepIndicator.classList.remove('active');
+    });
+</script>

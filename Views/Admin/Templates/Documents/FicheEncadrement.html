@@ -1,0 +1,134 @@
+﻿<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* A4 page container */
+    .page {
+        width: 21cm;
+        min-height: 29.7cm; /* A4 height */
+        margin: 1cm auto;
+        padding: 2cm;
+        box-sizing: border-box;
+        position: relative; /* for absolute positioning of signatures */
+        line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .header img {
+            height: 100px;
+        }
+
+        .header .center {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+    /* Titles */
+    h2, h3, h4 {
+        text-align: center;
+        margin: 5px 0;
+    }
+
+    /* Horizontal line */
+    hr {
+        border: 1px solid #000;
+        margin: 15px 0;
+    }
+
+    /* Paragraphs */
+    p {
+        margin: 10px 0;
+        text-align: justify;
+    }
+
+    /* Lists */
+    ul {
+        margin: 10px 0 10px 20px;
+    }
+
+    /* Tables */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+        table th, table td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+    /* Signature area at bottom */
+    .signatures {
+        position: absolute;
+        bottom: 2cm;
+        width: calc(100% - 4cm);
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .signatures p {
+            margin: 0;
+        }
+
+    .signature-center {
+        text-align: center;
+        flex-grow: 1;
+    }
+</style>
+<div class="page">
+    <div class="header">
+        <img src="{{LogoPath}}" alt="Logo ENCG">
+        <div class="center">
+            <h4>Université Mohammed Premier</h4>
+            <h4>École Nationale de Commerce et de Gestion – Oujda</h4>
+            <h5>Service des Affaires Étudiantes</h5>
+        </div>
+        <img src="{{LogoPath2}}" alt="Logo Entreprise">
+    </div>
+
+    <h2>FICHE DE SUIVI D’ENCADREMENT</h2>
+    <hr>
+
+    <p><b>Nom et Prénoms :</b> {{NomComplet}}</p>
+    <p><b>N.C.E :</b> {{CNE}}</p>
+    <p><b>Spécialité :</b> {{Filiere}} - {{Niveau}} - {{Module}}</p>
+    <p><b>Entreprise :</b> {{NomOrganisme}}</p>
+    <p><b>Période du stage :</b> {{DateDebut}} – {{DateFin}}</p>
+
+    <h3>ENCADREUR UNIVERSITAIRE</h3>
+    <p>Nom et Prénom : {{NomEnseignant}}</p>
+    <p>Email : {{Email}}</p>
+
+    <h3>OBSERVATIONS DE L’ENCADREUR</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Observations / Commentaires</th>
+                <th>Évaluation (Bien / Moyen / À améliorer)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td style="height:50px;"></td><td></td><td></td></tr>
+            <tr><td style="height:50px;"></td><td></td><td></td></tr>
+            <tr><td style="height:50px;"></td><td></td><td></td></tr>
+        </tbody>
+    </table>
+
+    <div class="signatures">
+        <p>Étudiant : _____________________</p>
+        <p>Encadrant Universitaire : _____________________</p>
+    </div>
+</div>

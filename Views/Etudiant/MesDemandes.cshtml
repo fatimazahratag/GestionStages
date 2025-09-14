@@ -1,0 +1,254 @@
+﻿@model GestionStages.Models.ViewModels.MesDemandesViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Mes demandes";
+}
+
+<style>
+    :root {
+        --gold: #E8C872;
+        --dark: #1C1C1E;
+        --light-gray: #f9f9f9;
+    }
+
+    .demande-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        max-width: 900px;
+        margin: auto;
+    }
+
+    /* === Bouton centré === */
+    .btn-center {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .btn-gold {
+        background-color: var(--gold);
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 30px;
+        font-weight: bold;
+        border: none;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: #d1b45a;
+            transform: scale(1.05);
+        }
+
+    /* === Style du select === */
+    .custom-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: var(--light-gray);
+        border: 2px solid var(--gold);
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        font-weight: bold;
+        width: 100%;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%231C1C1E' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
+    }
+
+        .custom-select:focus {
+            outline: none;
+            border-color: var(--dark);
+        }
+
+    /* === Table design moderne === */
+    .custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+        .custom-table thead {
+            background-color: var(--gold);
+            color: white;
+            font-weight: bold;
+        }
+
+        .custom-table th {
+            padding: 1rem;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .custom-table td {
+            background: var(--light-gray);
+            padding: 1rem;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+    /* Badges avec icônes */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.4rem 0.8rem;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        color: #1C1C1E;
+    }
+</style>
+
+<div class="demande-container">
+    <h2>📄 Mes Demandes</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <form asp-action="MesDemandes" method="post">
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.NouvelleDemande.TypeDocument,
+            new List<SelectListItem>
+                        {
+                        new SelectListItem { Text="Choisissez votre demande", Value="" },
+                        new SelectListItem { Text="Attestation de scolarité", Value="Attestation de scolarité" },
+                        new SelectListItem { Text="Dossier de stage", Value="Dossier de stage" },
+                        },
+                        new { @class = "custom-select", id = "typeDemandeSelect" })
+
+            @Html.ValidationMessageFor(m => m.NouvelleDemande.TypeDocument)
+        </div>
+
+      
+
+        <div class="btn-center">
+            <button type="submit" class="btn-gold">Validé</button>
+        </div>
+    </form>
+
+    @section Scripts{
+        <script>
+            const typeSelect = document.getElementById('typeDemandeSelect');
+            const conventionFields = document.getElementById('conventionFields');
+            const dossierFields = document.getElementById('dossierFields');
+
+            typeSelect.addEventListener('change', function() {
+                const value = this.value;
+
+                // Masquer tous les champs d'abord
+                conventionFields.style.display = 'none';
+                dossierFields.style.display = 'none';
+
+                if(value === 'Convention de stage'){
+                    conventionFields.style.display = 'block';
+                }
+                else if(value === 'Dossier de stage'){
+                    dossierFields.style.display = 'block';
+                }
+                // Attestation de scolarité ou autre -> aucun champ supplémentaire
+            });
+
+                    function rafraichirStatuts() {
+                fetch('@Url.Action("GetDemandesStatus", "Etudiant")')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success) return;
+                        data.demandes.forEach(d => {
+                            const row = document.querySelector(`tr[data-id='${d.idDocument}'] .statut-cell`);
+                            if (row) {
+                                let badge = '';
+                                if (d.statut === "Validé") {
+                                    badge = `<span class="badge badge-success">✅ Validé</span>`;
+                                } else if (d.statut === "Refusé") {
+                                    badge = `<span class="badge badge-danger">❌ Refusé</span>`;
+                                } else if (d.statut === "Prêt") {
+                                    badge = `<span class="badge badge-success">📦 Prêt</span>`;
+                                } else if (d.statut === "En préparation") {
+                                    badge = `<span class="badge badge-warning">⚙️ En préparation</span>`;
+                                } else {
+                                    badge = `<span class="badge badge-warning">⏳ En attente</span>`;
+                                }
+                                row.innerHTML = badge;
+                            }
+                        });
+                    });
+            }
+
+            // Vérifie toutes les 5 secondes
+            setInterval(rafraichirStatuts, 5000);
+        </script>
+
+    }
+
+
+    @if (!Model.ListeDemandes.Any())
+    {
+        <div class="alert alert-info mt-3">Vous n'avez pas encore soumis de demande.</div>
+    }
+    else
+    {
+        <table class="custom-table mt-3">
+            <thead>
+                <tr>
+                    <th>Type de demande</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var demande in Model.ListeDemandes)
+                {
+                    <tr data-id="@demande.Id">
+                        <td>@demande.TypeDocument</td>
+                        <td>@(demande.DateDepot?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td class="statut-cell">
+                            @if (demande.Statut == "Validé")
+                            {
+                                <span class="badge badge-success">✅ Validé</span>
+                            }
+                            else if (demande.Statut == "Refusé")
+                            {
+                                <span class="badge badge-danger">❌ Refusé</span>
+                            }
+                            else if (demande.Statut == "Prêt")
+                            {
+                                <span class="badge badge-success">📦 Prêt</span>
+                            }
+                            else if (demande.Statut == "En préparation")
+                            {
+                                <span class="badge badge-warning">⚙️ En préparation</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-warning">⏳ En attente</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    }
+</div>

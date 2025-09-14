@@ -1,0 +1,88 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – Espace Étudiant</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/etudiant/layout.css" />
+</head>
+
+<body class="dashboard-layout">
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header text-center mb-4 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <img src="~/images/logo.png" alt="Logo" class="logo" />
+            </div>
+            <button id="closeSidebar" class="btn btn-sm d-md-none"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="nav-menu">
+            <a asp-controller="Etudiant" asp-action="Dashboard">📊 Dashboard</a>
+            <a asp-controller="Etudiant" asp-action="Profile">👤 Profil</a>
+            <a asp-controller="Etudiant" asp-action="MesStages">📁 Mes Stages</a>
+            <a asp-controller="Etudiant" asp-action="MesDemandes">📝 Mes Demandes</a>
+            <a asp-controller="Etudiant" asp-action="Rapport">📤 Rapport</a>
+            <a asp-controller="Etudiant" asp-action="Sujets">➕ Sujets</a>
+            <a asp-controller="Etudiant" asp-action="MaSoutenance">📄 Soutenance</a> 
+            <a asp-controller="Auth" asp-action="Logout">🚪 Déconnexion</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <header class="topbar">
+            <button id="openSidebar" class="btn d-md-none"><i class="fas fa-bars"></i></button>
+
+            <div class="search-bar">
+                <input type="text" class="form-control" placeholder="Recherche...">
+            </div>
+            <div class="profile-section d-flex align-items-center gap-3">
+                <i class="fas fa-bell"></i>
+                <span class="username">@User.Identity?.Name</span>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+
+        openBtn?.addEventListener('click', () => {
+            sidebar.classList.remove('closed');
+        });
+
+        closeBtn?.addEventListener('click', () => {
+            sidebar.classList.add('closed');
+        });
+
+        // Optional: close sidebar by default on small screen
+        if (window.innerWidth < 768) {
+            sidebar.classList.add('closed');
+        }
+    </script>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        @RenderSection("Scripts", required: false)
+
+</body>
+</html>

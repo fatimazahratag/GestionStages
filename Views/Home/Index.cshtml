@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Accueil";
+}
+<head>
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+</head>
+<div class="page-accueil">
+    <h2>Bienvenue sur StageStack</h2>
+    <h3>Choisissez votre espace :</h3>
+
+    <div class="cards">
+        <a asp-controller="Auth" asp-action="Login" asp-route-role="Etudiant" class="card">
+            <div class="emoji">🎓</div>
+            Étudiant
+        </a>
+        <a asp-controller="Auth" asp-action="Login" asp-route-role="Enseignant" class="card">
+            <div class="emoji">👩‍🏫</div>
+            Enseignant
+        </a>
+        <a asp-controller="Auth" asp-action="Login" asp-route-role="Admin" class="card">
+            <div class="emoji">🛠️</div>
+            Admin
+        </a>
+    </div>
+</div>

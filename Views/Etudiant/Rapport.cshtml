@@ -1,0 +1,245 @@
+﻿@model GestionStages.Models.ViewModels.RapportViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Déposer le Rapport";
+}
+
+<style>
+    :root {
+        --gold: #E8C872;
+        --gold-dark: #c3a654;
+        --dark: #1C1C1E;
+        --light-gray: #f9f9f9;
+        --shadow: rgba(0,0,0,0.08);
+        --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        font-family: var(--font-primary);
+        background-color: var(--light-gray);
+    }
+
+    h2, h3 {
+        font-weight: 700;
+    }
+
+    h2 {
+        color: var(--gold);
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+    }
+
+    h3 {
+        color: var(--dark);
+        margin-top: 3rem;
+    }
+
+    .card-custom {
+        background: white;
+        padding: 2rem 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px var(--shadow);
+        margin-bottom: 2rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-gold {
+        background-color: var(--gold);
+        color: white;
+        font-weight: bold;
+        border-radius: 30px;
+        padding: 0.7rem 2rem;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-gold:hover {
+            background-color: var(--gold-dark);
+            transform: scale(1.05);
+        }
+
+    .table-custom {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+        .table-custom thead {
+            background-color: var(--gold);
+            color: white;
+            font-weight: bold;
+        }
+
+        .table-custom th {
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+
+        .table-custom td {
+            background-color: white;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px var(--shadow);
+            font-weight: 500;
+        }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.4rem 0.8rem;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        color: var(--dark);
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>
+@if (Model.DateLimiteRapportFinal.HasValue)
+{
+    <div class="alert alert-info">
+        🗓️ Date limite de dépôt du rapport final :
+        <strong>@Model.DateLimiteRapportFinal.Value.ToString("dd/MM/yyyy")</strong>
+    </div>
+}
+
+<div class="card-custom">
+    <h2>📤 Déposer le Rapport Final</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <form asp-action="Rapport" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Sélectionner le fichier PDF</label>
+            <input type="file" class="form-control" name="Rapport" />
+        </div>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn-gold">✅ Déposer</button>
+        </div>
+    </form>
+</div>
+
+<h3>📑 Mes Rapports</h3>
+
+<table class="table-simple">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Date Dépôt</th>
+            <th>Statut</th>
+            <th>Niveau</th>
+            <th>Télécharger</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doc in Model.ListeRapports)
+        {
+            <tr>
+                <td>Rapport Final.pdf</td>
+                <td>@doc.DateDepot.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @if (doc.Statut == "Soumis")
+                    {
+                        <span class="badge badge-warning">@doc.Statut</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-success">@doc.Statut</span>
+                    }
+                </td>
+                <td>@doc.Etudiant?.Niveau ème année</td>
+                <td>
+                    <a class="btn btn-gold btn-sm" asp-action="Download" asp-route-id="@doc.IdDocument">📥 Télécharger</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    .table-simple {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+        .table-simple th, .table-simple td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table-simple th {
+            background-color: #E8C872;
+            color: white;
+            font-weight: 600;
+        }
+
+        .table-simple td {
+            background-color: #ffffff;
+        }
+
+        .table-simple tr:hover td {
+            background-color: #f1f1f1;
+        }
+
+    .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        color: #1C1C1E;
+    }
+
+    .btn-gold {
+        background-color: #E8C872;
+        color: white;
+        border-radius: 20px;
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+        text-decoration: none;
+        border: none;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: #c3a654;
+        }
+</style>
+

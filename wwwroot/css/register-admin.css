@@ -1,0 +1,115 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Comfortaa', sans-serif;
+    background: linear-gradient(135deg, #f9e4c8, #f5f1eb, #e0c8a0);
+    background-size: 200% 200%;
+    animation: gradientBG 10s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Card élégante */
+.register-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    width: 100%;
+    max-width: 420px;
+}
+
+    .register-card h2 {
+        color: #a87c4f;
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 1.7rem;
+    }
+
+/* Pile verticale des champs */
+.form-stack .form-group {
+    margin-bottom: 22px;
+}
+
+label {
+    font-weight: 600;
+    color: #6f5b3e;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #d9c7a1;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+    input:focus {
+        border-color: #a87c4f;
+        outline: none;
+        box-shadow: 0 0 8px rgba(168, 124, 79, 0.3);
+    }
+
+.field-validation-error {
+    color: #d9534f;
+    font-size: 0.85rem;
+}
+
+/* Bouton */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    background: linear-gradient(to right, #c59f72, #a87c4f);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-submit:hover {
+        background: linear-gradient(to right, #a87c4f, #8e6b3e);
+        transform: scale(1.02);
+    }
+
+.text-center {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.95rem;
+}
+
+    .text-center a {
+        color: #a87c4f;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .text-center a:hover {
+            text-decoration: underline;
+        }

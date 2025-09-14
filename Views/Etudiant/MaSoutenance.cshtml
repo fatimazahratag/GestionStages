@@ -1,0 +1,73 @@
+﻿@model GestionStages.Models.ViewModels.SoutenanceEtudiantViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Ma Soutenance";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">📑 Détails de ma Soutenance</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="card shadow-sm rounded-3 p-4">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2">
+                <strong>Date de Soutenance:</strong>
+                <span>@(Model.DateSoutenance?.ToString("dd/MM/yyyy HH:mm") ?? "Non définie")</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2">
+                <strong>Lieu / Amphi:</strong>
+                <span>@Model.Lieu</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2">
+                <strong>Jury:</strong>
+                <span>@Model.Jury1 / @Model.Jury2</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2">
+                <strong>Note finale:</strong>
+                <span>@(Model.NoteFinale?.ToString("0.0") ?? "Pas encore notée")</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2">
+                <strong>Statut:</strong>
+                <span>
+                    @if (Model.Statut == "Validée")
+                    {
+                        <span class="badge bg-success">@Model.Statut</span>
+                    }
+                    else if (Model.Statut == "En attente")
+                    {
+                        <span class="badge bg-warning text-dark">@Model.Statut</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@Model.Statut</span>
+                    }
+                </span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .list-group-item {
+        background-color: #fff; /* fond blanc */
+        border: 1px solid #eaeaea; /* légère séparation entre items */
+        border-radius: 0.5rem;
+    }
+
+        .list-group-item strong {
+            color: #495057;
+        }
+
+    .card {
+        background-color: #fff; /* fond blanc */
+    }
+
+    .list-group-flush .list-group-item + .list-group-item {
+        margin-top: 0.5rem; /* espace entre les items */
+    }
+</style>

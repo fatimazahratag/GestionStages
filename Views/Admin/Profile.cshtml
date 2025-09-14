@@ -1,0 +1,90 @@
+﻿@model GestionStages.Models.Admin
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Mon Profil";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 bg-light-brown p-4">
+        <div class="row">
+            <!-- Left: Avatar & Basic Info -->
+            <div class="col-md-4 text-center border-end">
+                <i class="fas fa-user-circle fa-7x text-gold"></i>
+                <h3 class="mt-3 text-brown fw-bold">@Model.NomComplet</h3>
+                <span class="text-muted">Administrateur</span>
+                <p class="mt-3"><i class="fas fa-envelope me-2"></i>@Model.Email</p>
+                <p><i class="fas fa-phone me-2"></i>@Model.Telephone</p>
+            </div>
+
+            <!-- Right: Edit & Change Password -->
+            <div class="col-md-8 ps-5">
+                <h4 class="text-brown fw-bold mb-4">Modifier le profil</h4>
+                <a class="btn btn-gold mb-4" href="/Admin/Edit/@Model.IdAdmin">
+                    ✏️ Modifier Profil
+                </a>
+
+                <hr />
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <h5 class="text-brown fw-bold mb-3">🔒 Changer le mot de passe</h5>
+                <form method="post" asp-action="ChangePassword" asp-controller="Admin">
+                    <input type="hidden" name="UtilisateurId" value="@Model.UtilisateurId" />
+
+                    <div class="mb-3">
+                        <label class="form-label text-brown">Nouveau mot de passe</label>
+                        <input type="password" class="form-control" name="NewPassword" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-brown">Confirmer mot de passe</label>
+                        <input type="password" class="form-control" name="ConfirmPassword" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-gold">
+                        💾 Enregistrer le mot de passe
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-gold {
+        background-color: #ffca28;
+        color: #3e2723;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: #ffc107;
+            color: #3e2723;
+        }
+
+    .bg-light-brown {
+        background-color: #efebe9;
+    }
+
+    .text-brown {
+        color: #5d4037;
+    }
+
+    .text-gold {
+        color: #ffca28;
+    }
+</style>

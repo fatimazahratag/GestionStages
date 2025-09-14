@@ -1,0 +1,51 @@
+﻿<div style="font-family: Arial, sans-serif; width: 700px; margin: auto; border:1px solid #ccc; padding: 30px;">
+    <!-- Header avec logos gauche et droite et texte centré -->
+    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 40px;">
+        <!-- plus de marge -->
+        <!-- Logo gauche -->
+        <div style="flex:0 0 auto;">
+            <img src="{{LogoPath}}" alt="Logo ENCG" style="height:80px;" />
+        </div>
+        &nbsp;
+        &nbsp; &nbsp;
+        &nbsp; &nbsp;
+        &nbsp; &nbsp;
+        &nbsp;
+        <!-- Texte centré -->
+        <div style="flex:1; text-align:center; margin-top:10px;">
+            <h4 style="margin:5px 0;">Université Mohammed Premier</h4>
+            <h4 style="margin:5px 0;">École Nationale de Commerce et de Gestion – Oujda</h4>
+            <h5 style="margin:5px 0;">Service des Affaires Étudiantes</h5>
+        </div>
+
+        <!-- Logo droit -->
+        <div style="flex:0 0 auto;">
+            <img src="{{LogoPath2}}" alt="Logo Entreprise" style="height:80px;" />
+        </div>
+    </div>
+
+    <!-- Titre -->
+    <h2 style="text-align:center; margin:0 0 10px 0; padding-bottom:5px;">ATTESTATION DE SCOLARITÉ</h2>
+    <!-- Contenu -->
+    &nbsp;
+    &nbsp;
+    <p>Le Doyen de l’École Nationale de Commerce et de Gestion – Oujda, dûment habilité à cet effet, atteste par la présente que l’étudiant(e) :</p>
+
+    <p><b>Nom et Prénom :</b> {{NomComplet}}</p>
+    <p><b>Niveau :</b> {{Niveau}},  {{Filiere}} </p>
+    <p>Est régulièrement inscrit(e) à l’École Nationale de Commerce et de Gestion – Oujda, composante de l’Université Mohammed Premier, pour l’année académique <b>{{Annee}}</b> et suit son cursus conformément aux règlements en vigueur.</p>
+
+    <p>Cette attestation est délivrée à la demande de l’étudiant(e) pour servir et valoir ce que de droit dans toutes ses démarches administratives et académiques.</p>
+
+    <br><br>
+    <p>Fait à Oujda, le {{DateTime}}</p>
+
+    <br><br>
+    <p style="margin-top:50px; text-align:center;">Le Doyen</p>
+
+    <hr style="margin-top:50px;">
+    <p style="font-size:12px; text-align:center;">
+        Le présent document n’est délivré qu’en un seul exemplaire.
+        Il appartient à l’étudiant d’en faire des photocopies certifiées conformes pour toutes utilisations officielles.
+    </p>
+</div>

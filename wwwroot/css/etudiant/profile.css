@@ -1,0 +1,150 @@
+﻿:root {
+    --gold: #E8C872;
+    --dark: #1C1C1E;
+    --light-gray: #f9f9f9;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: var(--light-gray);
+    border-radius: 20px;
+    padding: 2rem 3rem;
+    box-shadow: 0 8px 24px var(--shadow);
+    font-family: var(--font-primary);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 15px var(--shadow);
+    border: 4px solid var(--gold);
+}
+
+    .profile-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.profile-name-role {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+    .profile-name-role h1 {
+        font-size: 2.5rem;
+        margin: 0;
+        color: var(--dark);
+    }
+
+.profile-role {
+    font-weight: 600;
+    color: var(--gold);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.profile-username {
+    font-size: 1rem;
+    color: #666;
+    font-style: italic;
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.8rem 3rem;
+}
+
+.detail-group label {
+    font-weight: 600;
+    color: var(--gold);
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+    display: block;
+}
+
+.detail-group p {
+    font-size: 1.15rem;
+    color: var(--dark);
+    background: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.btn-gold {
+    background-color: var(--gold);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+.profile-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1rem;
+}
+
+.profile-label {
+    font-weight: 600;
+    color: #E8C872; /* gold/yellow color */
+    min-width: 140px;
+}
+
+.profile-value {
+    font-weight: 400;
+    color: #1C1C1E; /* dark text color */
+}
+
+    .btn-gold:hover {
+        background-color: #c3a654;
+    }
+
+/* Responsive */
+@media (max-width: 640px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-details {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-name-role h1 {
+        font-size: 2rem;
+    }
+}

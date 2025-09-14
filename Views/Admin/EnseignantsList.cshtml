@@ -1,0 +1,150 @@
+﻿@model IEnumerable<GestionStages.Models.Enseignant>
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold" style="color:#a87c4f;">
+        <i class="fas fa-chalkboard-teacher"></i> Liste des Enseignants
+    </h2>
+
+    <!-- Bouton Ajouter Enseignant stylé -->
+    <button type="button" class="btn btn-gradient-primary text-white fw-bold shadow"
+            data-bs-toggle="modal" data-bs-target="#addEnseignantModal"
+            style="border-radius: 50px; padding: 0.5rem 1.5rem; font-size: 1rem; background: linear-gradient(45deg, #a87c4f, #f4d8b4); border: none;">
+        <i class="fas fa-plus me-2"></i> Ajouter Enseignant
+    </button>
+</div>
+
+<!-- Modal Ajouter Enseignant stylé -->
+<div class="modal fade" id="addEnseignantModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+            <div class="modal-header" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color: #fff; border-bottom: none;">
+                <h5 class="modal-title fw-bold"><i class="fas fa-chalkboard-teacher me-2"></i> Ajouter Enseignant</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Admin" asp-action="CreateEnseignant" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nom complet</label>
+                            <input type="text" name="NomEnseignant" class="form-control shadow-sm" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" name="Email" class="form-control shadow-sm" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Téléphone</label>
+                            <input type="text" name="Telephone" class="form-control shadow-sm" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Département</label>
+                            <input type="text" name="DepartementAttache" class="form-control shadow-sm" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Filière</label>
+                            <input type="text" name="Filiere" class="form-control shadow-sm" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit"
+                            class="btn fw-bold shadow"
+                            style="border-radius:50px; padding:0.5rem 1.5rem; background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
+                        <i class="fas fa-check me-1"></i> Ajouter
+                    </button>
+
+                    <button type="button"
+                            class="btn fw-bold shadow"
+                            style="border-radius:50px; padding:0.5rem 1.5rem; background:#6c757d; color:white;"
+                            data-bs-dismiss="modal">
+                        Annuler
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Tableau des enseignants -->
+<table class="table table-hover shadow-sm rounded" style="background-color: #fff; border: 2px solid #a87c4f;">
+    <thead style="background-color: #a87c4f; color: white;">
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Département</th>
+            <th>Filière</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.NomEnseignant</td>
+                <td>@e.Email</td>
+                <td>@e.Telephone</td>
+                <td>@e.DepartementAttache</td>
+                <td>@e.Filiere</td>
+                <td class="text-center">
+                    <!-- Bouton Modifier (ouvre modal) -->
+                    <button type="button" class="btn btn-sm"
+                            style="background-color:#f4d8b4; color:#4b3b2b;"
+                            data-bs-toggle="modal" data-bs-target="#editModal-@e.IdEnseignant">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Modal Édition enseignant (unique par enseignant) -->
+            <div class="modal fade" id="editModal-@e.IdEnseignant" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content" style="border-radius:12px;">
+                        <div class="modal-header" style="background-color:#f4d8b4; color:#4b3b2b;">
+                            <h5 class="modal-title"><i class="fas fa-edit"></i> Modifier Enseignant</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form asp-action="EditEnseignant" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="IdEnseignant" value="@e.IdEnseignant" />
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Nom complet</label>
+                                        <input type="text" name="NomEnseignant" value="@e.NomEnseignant" class="form-control" required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Email</label>
+                                        <input type="email" name="Email" value="@e.Email" class="form-control" required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Téléphone</label>
+                                        <input type="text" name="Telephone" value="@e.Telephone" class="form-control" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Département</label>
+                                        <input type="text" name="DepartementAttache" value="@e.DepartementAttache" class="form-control" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Filière</label>
+                                        <input type="text" name="Filiere" value="@e.Filiere" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Enregistrer</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </tbody>
+</table>

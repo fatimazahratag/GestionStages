@@ -1,0 +1,274 @@
+﻿@model GestionStages.Models.ViewModels.SoutenanceViewModel
+@{
+    Layout = "_LayoutAdmin";
+}
+<script>
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('jury-choice')) {
+            var value = e.target.getAttribute('data-value');
+            var inputId = e.target.getAttribute('data-input-id');
+            var buttonId = e.target.getAttribute('data-button-id');
+
+            var input = document.getElementById(inputId);
+            var btn = document.getElementById(buttonId);
+
+            if (input) input.value = value;
+            if (btn)   btn.textContent = value;
+        }
+    }, true);
+</script>
+
+
+<h2 style="color:#a87c4f;"><i class="fas fa-balance-scale"></i> Liste des Soutenances</h2>
+<button type="button" class="btn"
+        style="background-color:#a87c4f; color:white; border-radius:20px; padding:0.5rem 1.5rem;"
+        data-bs-toggle="modal" data-bs-target="#addSoutenanceModal">
+    <i class="fas fa-plus me-1"></i> Ajouter Soutenance
+</button>
+
+<br />
+&nbsp;
+<!-- Modal Ajouter Soutenance -->
+<div class="modal fade" id="addSoutenanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-l modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-4">
+            <div class="modal-header bg-gradient-primary text-white border-0">
+                <h5 class="modal-title"><i class="fas fa-plus me-2"></i> Ajouter Soutenance</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-controller="Admin" asp-action="CreateSoutenance" method="post" class="p-3">
+                @Html.AntiForgeryToken()
+                <div class="modal-body row g-3">
+
+                    <!-- Étudiant -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Étudiant</label>
+                        <select name="IdEtudiant" class="form-select" required>
+                            <option value="">-- Sélectionner --</option>
+                            @foreach (var etu in Model.Etudiants ?? Enumerable.Empty<GestionStages.Models.Etudiant>())
+                            {
+                                <option value="@etu.IdEtudiant">@etu.NomComplet - @etu.Niveau</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Date Soutenance -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Date Soutenance</label>
+                        <input type="datetime-local" name="DateSoutenance" class="form-control" required />
+                    </div>
+
+                    <!-- Lieu -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Lieu</label>
+                        <input type="text" name="Lieu" class="form-control" placeholder="Salle ou adresse" required />
+                    </div>
+
+                    <!-- Jury 1 -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Jury 1</label>
+                        <select name="Jury1" class="form-select" required>
+                            <option value="">-- Sélectionner --</option>
+                            @foreach (var ens in Model.Enseignants ?? Enumerable.Empty<GestionStages.Models.Enseignant>())
+                            {
+                                <option value="@ens.NomEnseignant">@ens.NomEnseignant</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Jury 2 -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Jury 2</label>
+                        <select name="Jury2" class="form-select" required>
+                            <option value="">-- Sélectionner --</option>
+                            @foreach (var ens in Model.Enseignants ?? Enumerable.Empty<GestionStages.Models.Enseignant>())
+                            {
+                                <option value="@ens.NomEnseignant">@ens.NomEnseignant</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0 d-flex justify-content-end gap-2 mt-3">
+                    <button type="submit" class="btn" style="background-color:#a87c4f; color:white; border-radius:20px; padding:0.5rem 1.5rem;">
+                        <i class="fas fa-check me-2"></i> Ajouter
+                    </button>
+                    <button type="button" class="btn" style="background-color:#f4d8b4; color:#4b3b2b; border-radius:20px; padding:0.5rem 1.5rem;" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-header.bg-gradient-primary {
+        background: linear-gradient(90deg, #a87c4f, #d4a373);
+    }
+
+    .btn-primary {
+        background-color: #a87c4f;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #d4a373;
+        }
+
+    .form-label {
+        color: #4b3b2b;
+    }
+</style>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (Model?.Soutenances != null && Model.Soutenances.Any())
+{
+    <table class="table table-hover shadow-sm rounded" style="background-color: #fff; border:2px solid #a87c4f;">
+        <thead style="background-color:#a87c4f; color:white;">
+            <tr>
+                <th>Étudiant</th>
+                <th>Niveau</th>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Jury 1</th>
+                <th>Jury 2</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var s in Model.Soutenances)
+        {
+            <tr>
+                <td>@s.Stage.Etudiant.NomComplet</td>
+                <td>@s.Stage.Etudiant.Niveau</td>
+                <td>@(s.DateSoutenance.HasValue ? s.DateSoutenance.Value.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                <td>@s.Lieu</td>
+                <td>@s.Jury1</td>
+                <td>@s.Jury2</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm" style="background-color:#f4d8b4; color:#4b3b2b;"
+                            data-bs-toggle="modal" data-bs-target="#editSoutenance-@s.IdSoutenance">
+                        <i class="fas fa-edit"></i> Modifier
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Modal -->
+            <div class="modal fade" id="editSoutenance-@s.IdSoutenance" tabindex="-1">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content" style="border-radius:12px;">
+                        <div class="modal-header" style="background-color:#f4d8b4; color:#4b3b2b;">
+                            <h5 class="modal-title"><i class="fas fa-edit"></i> Modifier Soutenance</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <form asp-controller="Admin" asp-action="EditSoutenance" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="IdSoutenance" value="@s.IdSoutenance" />
+
+                            <div class="modal-body" style="padding:2rem;">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Date Soutenance</label>
+                                    <input type="datetime-local" name="DateSoutenance"
+                                           value="@(s.DateSoutenance.HasValue ? s.DateSoutenance.Value.ToString("yyyy-MM-ddTHH:mm") : "")"
+                                           class="form-control" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Lieu</label>
+                                    <input type="text" name="Lieu" value="@s.Lieu" class="form-control" required />
+                                </div>
+
+                                    @* ---------- Jury 1 (no <option>) ---------- *@
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Jury 1</label>
+
+                                        <div class="dropdown w-100">
+                                            <button class="btn btn-outline-secondary w-100 dropdown-toggle"
+                                                    type="button"
+                                                    id="btnJ1-@s.IdSoutenance"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                @(string.IsNullOrWhiteSpace(s.Jury1) ? "-- Sélectionner --" : s.Jury1)
+                                            </button>
+
+                                            <ul class="dropdown-menu w-100" aria-labelledby="btnJ1-@s.IdSoutenance" style="max-height:300px;overflow:auto;">
+                                                @foreach (var ens in Model.Enseignants ?? Enumerable.Empty<GestionStages.Models.Enseignant>())
+                                                {
+                                                    <li>
+                                                        <button type="button"
+                                                                class="dropdown-item jury-choice"
+                                                                data-input-id="Jury1-@s.IdSoutenance"
+                                                                data-button-id="btnJ1-@s.IdSoutenance"
+                                                                data-value="@ens.NomEnseignant">
+                                                            @ens.NomEnseignant
+                                                        </button>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+
+                                        <input type="hidden" id="Jury1-@s.IdSoutenance" name="Jury1" value="@s.Jury1" />
+                                    </div>
+
+                                    @* ---------- Jury 2 (no <option>) ---------- *@
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Jury 2</label>
+
+                                        <div class="dropdown w-100">
+                                            <button class="btn btn-outline-secondary w-100 dropdown-toggle"
+                                                    type="button"
+                                                    id="btnJ2-@s.IdSoutenance"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                @(string.IsNullOrWhiteSpace(s.Jury2) ? "-- Sélectionner --" : s.Jury2)
+                                            </button>
+
+                                            <ul class="dropdown-menu w-100" aria-labelledby="btnJ2-@s.IdSoutenance" style="max-height:300px;overflow:auto;">
+                                                @foreach (var ens in Model.Enseignants ?? Enumerable.Empty<GestionStages.Models.Enseignant>())
+                                                {
+                                                    <li>
+                                                        <button type="button"
+                                                                class="dropdown-item jury-choice"
+                                                                data-input-id="Jury2-@s.IdSoutenance"
+                                                                data-button-id="btnJ2-@s.IdSoutenance"
+                                                                data-value="@ens.NomEnseignant">
+                                                            @ens.NomEnseignant
+                                                        </button>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+
+                                        <input type="hidden" id="Jury2-@s.IdSoutenance" name="Jury2" value="@s.Jury2" />
+                                    </div>
+
+                            </div>
+
+                            <div class="modal-footer" style="border:none;">
+                                <button type="submit" class="btn" style="background-color:#a87c4f; color:white; border-radius:20px; padding:0.5rem 1.5rem;">Enregistrer</button>
+                                <button type="button" class="btn" style="background-color:#f4d8b4; color:#4b3b2b; border-radius:20px; padding:0.5rem 1.5rem;" data-bs-dismiss="modal">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Aucune soutenance trouvée.</p>
+}

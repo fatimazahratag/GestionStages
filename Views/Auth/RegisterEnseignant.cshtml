@@ -1,0 +1,71 @@
+﻿@model GestionStages.Models.ViewModels.RegisterEnseignantViewModel
+@{
+    ViewData["Title"] = "Créer un compte Enseignant";
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="~/css/register-enseignant.css" />
+</head>
+
+<div class="register-container">
+    <h2>@ViewData["Title"]</h2>
+
+    <form asp-action="RegisterEnseignant" method="post" novalidate>
+        <div class="form-row">
+            <div class="form-col">
+                <div class="form-group">
+                    <label asp-for="NomEnseignant"></label>
+                    <input asp-for="NomEnseignant" class="form-control" />
+                    <span asp-validation-for="NomEnseignant" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" type="email" class="form-control" />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Telephone"></label>
+                    <input asp-for="Telephone" class="form-control" />
+                    <span asp-validation-for="Telephone" class="field-validation-error"></span>
+                </div>
+            </div>
+
+            <div class="form-col">
+                <div class="form-group">
+                    <label asp-for="DepartementAttache"></label>
+                    <input asp-for="DepartementAttache" class="form-control" />
+                    <span asp-validation-for="DepartementAttache" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Filiere"></label>
+                    <input asp-for="Filiere" class="form-control" />
+                    <span asp-validation-for="Filiere" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MotDePasse"></label>
+                    <input asp-for="MotDePasse" type="password" class="form-control" />
+                    <span asp-validation-for="MotDePasse" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-center">
+           
+
+            <div class="form-group">
+                <label asp-for="ConfirmerMotDePasse"></label>
+                <input asp-for="ConfirmerMotDePasse" type="password" class="form-control" />
+                <span asp-validation-for="ConfirmerMotDePasse" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer un compte</button>
+    </form>
+
+    <div class="text-center">
+        <p>Déjà un compte ? <a asp-controller="Auth" asp-action="Login" asp-route-role="Enseignant">Se connecter</a></p>
+    </div>
+</div>

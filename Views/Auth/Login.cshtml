@@ -1,0 +1,46 @@
+﻿@model GestionStages.Models.ViewModels.LoginViewModel
+<head>
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+@{
+    ViewData["Title"] = "Connexion";
+    var role = ViewBag.Role as string ?? "Utilisateur";
+}
+
+<div class="login-container">
+    <div class="login-box">
+        <h2>Connexion à l’espace @role</h2>
+
+        <form asp-action="Login" method="post" class="login-form">
+            <input type="hidden" asp-for="Role" value="@role" />
+
+            <div class="form-group">
+                <label asp-for="NomUtilisateur"></label>
+                <input asp-for="NomUtilisateur" class="form-control" />
+                <span asp-validation-for="NomUtilisateur" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MotDePasse"></label>
+                <input asp-for="MotDePasse" type="password" class="form-control" />
+                <span asp-validation-for="MotDePasse" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-submit">Se connecter</button>
+        </form>
+
+        <p class="register-link">
+            Pas encore de compte ?
+            @{
+                string actionName = ViewBag.Role switch
+                {
+                    "Etudiant" => "RegisterEtudiant",
+                    "Enseignant" => "RegisterEnseignant",
+                    "Admin" => "RegisterAdmin",
+                    _ => "Register"
+                };
+            }
+            <a asp-controller="Auth" asp-action="@actionName">Créer un compte @ViewBag.Role</a>
+        </p>
+    </div>
+</div>

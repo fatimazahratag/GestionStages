@@ -1,0 +1,69 @@
+﻿@model GestionStages.Models.Admin
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Modifier Profil";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 bg-light-brown p-4 mx-auto" style="max-width:600px;">
+        <h3 class="text-brown fw-bold mb-4">✏️ Modifier Profil</h3>
+
+        <form method="post" asp-action="Edit" asp-controller="Admin">
+            <input type="hidden" name="IdAdmin" value="@Model.IdAdmin" />
+
+            <div class="mb-3">
+                <label class="form-label text-brown">Nom Complet</label>
+                <input type="text" class="form-control" name="NomComplet" value="@Model.NomComplet" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-brown">Email (login)</label>
+                <input type="email" class="form-control" name="Email" value="@Model.Utilisateur?.NomUtilisateur" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-brown">Téléphone</label>
+                <input type="text" class="form-control" name="Telephone" value="@Model.Telephone" required />
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-gold rounded-pill px-4">💾 Enregistrer</button>
+                <a class="btn btn-outline-gold rounded-pill px-4 ms-2" href="/Admin/Profile">↩️ Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<style>
+    .btn-gold {
+        background-color: #ffca28;
+        color: #3e2723;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: #ffc107;
+            color: #3e2723;
+        }
+
+    .btn-outline-gold {
+        border: 2px solid #ffca28;
+        color: #5d4037;
+        font-weight: 600;
+    }
+
+        .btn-outline-gold:hover {
+            background-color: #ffca28;
+            color: #3e2723;
+        }
+
+    .bg-light-brown {
+        background-color: #efebe9;
+    }
+
+    .text-brown {
+        color: #5d4037;
+    }
+</style>

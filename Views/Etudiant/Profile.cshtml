@@ -1,0 +1,61 @@
+﻿@model GestionStages.Models.Etudiant
+
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Profile";
+}
+
+<link rel="stylesheet" href="~/css/etudiant/profile.css" asp-append-version="true" />
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-photo">
+            <div class="profile-picture">
+                <img src="~/images/default-avatar.jpg" alt="Photo de profil" />
+            </div>
+
+        </div>
+        <div class="profile-name-role">
+            <h1>@Model.NomComplet</h1>
+            <div class="profile-row">
+                <span class="profile-label">N° d'utilisateur :</span>
+                <span class="profile-value">@Model.UtilisateurId</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">Filière :</span>
+                <span class="profile-value">@Model.Filiere</span>
+            </div>
+
+
+            <!-- You can replace UtilisateurId with username or role fetched from user service -->
+        </div>
+    </div>
+
+    <div class="profile-details">
+        <div class="detail-group">
+            <label>CNE</label>
+            <p>@Model.CNE</p>
+        </div>
+        <div class="detail-group">
+            <label>Email</label>
+            <p>@Model.Email</p>
+        </div>
+        <div class="detail-group">
+            <label>Téléphone</label>
+            <p>@Model.Telephone  </p>
+        </div>
+        <div class="detail-group">
+            <label>Niveau</label>
+            <p>@Model.Niveau  </p>
+        </div>
+        <div class="detail-group">
+            <label>Module</label>
+            <p>@Model.Module </p>
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <a asp-controller="Etudiant" asp-action="EditProfile" class="btn btn-gold mt-3">✏ Modifier mon profil</a>
+    </div>
+
+</div>

@@ -1,0 +1,118 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+body {
+    font-family: 'Comfortaa', 'Roboto', sans-serif;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f9e4c8, #f5f1eb, #e0c8a0);
+    background-size: 200% 200%;
+    animation: gradientBG 10s ease infinite;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #4b3b2b;
+}
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 60%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 60%;
+    }
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden; 
+}
+
+.navbar {
+    background-color: #a87c4f;
+    padding: 15px 30px;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.page-accueil {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #a87c4f;
+    margin-bottom: 10px;
+}
+
+h3 {
+    color: #6f5b3e;
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border: 2px solid #a87c4f;
+    color: #4b3b2b;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 30px 20px;
+    width: 160px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(168, 124, 79, 0.2);
+}
+
+    .card:hover {
+        background-color: #f4d8b4;
+        color: #4b3b2b; 
+        box-shadow: 0 6px 12px rgba(168, 124, 79, 0.3); 
+        transform: scale(1.05); 
+    }
+
+
+.emoji {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+    .cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 80%;
+        max-width: 300px;
+    }
+}

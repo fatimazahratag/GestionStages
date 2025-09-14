@@ -1,0 +1,18 @@
+﻿@model GestionStages.Models.Admin
+
+<h2>Bienvenue @Model.NomComplet</h2>
+
+<table>
+    <tr>
+        <th>Email :</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Téléphone :</th>
+        <td>@Model.Telephone</td>
+    </tr>
+</table>
+
+<p>
+    <a asp-controller="Auth" asp-action="Logout">Se déconnecter</a>
+</p>

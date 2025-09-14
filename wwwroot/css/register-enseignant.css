@@ -1,0 +1,133 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Comfortaa', sans-serif;
+    background: linear-gradient(135deg, #f9e4c8, #f5f1eb, #e0c8a0);
+    background-size: 200% 200%;
+    animation: gradientBG 10s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.register-container {
+    background: #ffffff;
+    padding: 35px 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+    .register-container h2 {
+        color: #a87c4f;
+        margin-bottom: 25px;
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+.form-center {
+    margin: 20px auto;
+    max-width: 350px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    font-weight: 600;
+    color: #6f5b3e;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #d9c7a1;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: 0.3s ease;
+}
+
+    input:focus {
+        border-color: #a87c4f;
+        outline: none;
+        box-shadow: 0 0 6px rgba(168, 124, 79, 0.3);
+    }
+
+.field-validation-error {
+    color: #d9534f;
+    font-size: 0.85rem;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    background: linear-gradient(to right, #c59f72, #a87c4f);
+    color: white;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+    button:hover {
+        background: linear-gradient(to right, #a87c4f, #8e6b3e);
+        transform: scale(1.02);
+    }
+
+.text-center {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+    .text-center a {
+        color: #a87c4f;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .text-center a:hover {
+            text-decoration: underline;
+        }
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+}

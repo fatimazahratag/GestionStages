@@ -1,0 +1,31 @@
+﻿@model IEnumerable<GestionStages.Models.Stage>
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<h2>Liste des Stages</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Entreprise</th>
+            <th>Étudiant</th>
+            <th>Encadrant</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    @* <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.TitreStage</td>
+                <td>@s.Entreprise</td>
+                <td>@s.Etudiant?.NomComplet</td>
+                <td>@s.Encadrant?.NomEnseignant</td>
+                <td>
+                    <a asp-action="StageDetails" asp-route-id="@s.IdStage" class="btn btn-outline-gold btn-sm">Voir</a>
+                </td>
+            </tr>
+        }
+    </tbody> *@
+</table>

@@ -1,0 +1,153 @@
+﻿@model IEnumerable<GestionStages.Models.Document>
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<h2 class="mb-4" style="color:#4b3b2b;"><i class="fas fa-file-alt"></i> Demandes de Documents</h2>
+
+<table class="table table-hover shadow-sm rounded" style="background-color:#fff; border:1px solid #e0e0e0;">
+    <thead style="background-color:#4b3b2b; color:white;">
+        <tr>
+            <th>Étudiant</th>
+            <th>Niveau</th>
+            <th>Type Document</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in Model)
+        {
+            <tr>
+                <td>@d.Etudiant.NomComplet</td>
+                <td>@d.Etudiant.Niveau</td>
+                <td>@d.TypeDocument</td>
+                <td>@d.DateDepot.ToShortDateString()</td>
+                <td>
+                    <form asp-action="ChangerStatut" method="post" class="d-flex align-items-center">
+                        <input type="hidden" name="id" value="@d.IdDocument" />
+                        <select name="statut" class="form-select form-select-sm me-2">
+                            <option value="En attente" selected="@("En attente" == d.Statut)">En attente</option>
+                            <option value="En préparation" selected="@("En préparation" == d.Statut)">En préparation</option>
+                            <option value="Prêt" selected="@("Prêt" == d.Statut)">Prêt</option>
+                        </select>
+                        <button type="submit" class="btn btn-status"><i class="fas fa-check"></i></button>
+                    </form>
+                </td>
+                <td>
+                    @{
+                        var docType = d.TypeDocument?.Trim().ToLower();
+                    }
+
+                    @* PDF button for Attestation de scolarité *@
+                    @if (docType == "attestation de scolarité")
+                    {
+                        <a asp-action="GenererDocument" asp-route-id="@d.IdDocument" class="btn btn-pdf mb-1">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </a>
+                    }
+
+                    @* Dossier button for Dossier de Stage *@
+                    @if (docType == "dossier de stage")
+                    {
+                        <a asp-action="GenererDossierStage" asp-route-etudiantId="@d.EtudiantId" class="btn btn-dossier mb-1">
+                            <i class="fas fa-folder"></i> Dossier
+                        </a>
+                    }
+
+                    @* Delete button for all documents *@
+                    <form asp-action="SupprimerDocument" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@d.IdDocument" />
+                        <button type="submit" class="btn btn-danger mb-1" ">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    body {
+        background-color: #f9f7f1;
+        font-family: 'Segoe UI', sans-serif;
+        color: #333;
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+    }
+
+        table thead {
+            border-bottom: 3px solid #d4af37;
+        }
+
+        table tbody tr:hover {
+            background-color: #fff4e6 !important;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+    .form-select-sm {
+        min-width: 130px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 4px 8px;
+    }
+
+    /* Buttons */
+    .btn-status {
+        background-color: #4b3b2b;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-status:hover {
+            background-color: #6b5040;
+            color: #fff;
+        }
+
+    .btn-pdf {
+        background-color: #d9534f;
+        color: white;
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+
+        .btn-pdf:hover {
+            background-color: #c9302c;
+        }
+
+    .btn-dossier {
+        background-color: #f0ad4e;
+        color: white;
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+
+        .btn-dossier:hover {
+            background-color: #ec971f;
+            color: #fff;
+        }
+</style>
