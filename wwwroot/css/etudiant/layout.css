@@ -1,5 +1,4 @@
-﻿/* Global */
-body {
+﻿body {
     font-family: 'Montserrat', sans-serif;
     margin: 0;
     background-color: #f4f6fa;
@@ -42,7 +41,6 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar */
 .sidebar {
     width: 240px;
     background: #fff;
@@ -56,8 +54,8 @@ body {
 }
 
 .logo {
-    height: 70px; /* taille plus petite */
-    width: auto; /* pour garder les proportions */
+    height: 70px; 
+    width: auto; 
     object-fit: contain;
 }
 
@@ -87,14 +85,12 @@ body {
         margin-right: 10px;
     }
 
-/* Main content */
 .main-content {
     margin-left: 240px;
     flex-grow: 1;
-    padding: 90px 30px 30px; /* top padding for fixed navbar */
+    padding: 90px 30px 30px; 
 }
 
-/* Topbar (fixed navbar) */
 .topbar {
     display: flex;
     justify-content: space-between;
@@ -110,7 +106,6 @@ body {
     z-index: 1000;
 }
 
-/* Search */
 .search-bar input {
     padding: 6px 12px;
     border: 1px solid #ddd;
@@ -118,7 +113,6 @@ body {
     width: 250px;
 }
 
-/* Profile */
 .profile-section {
     display: flex;
     align-items: center;
@@ -136,7 +130,6 @@ body {
     color: #f48fb1;
 }
 
-/* Stats Cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -152,7 +145,6 @@ body {
     font-size: 16px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
@@ -181,7 +173,6 @@ body {
         width: 100%;
     }
 }
-/* Sidebar Toggle for Mobile */
 #sidebar {
     transition: transform 0.3s ease;
 }
@@ -198,7 +189,6 @@ body {
     cursor: pointer;
 }
 
-/* For larger screens, hide open/close buttons */
 @media (min-width: 768px) {
     #openSidebar,
     #closeSidebar {

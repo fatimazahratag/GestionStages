@@ -6,8 +6,8 @@ namespace GestionStages.Models
     {
         [Key]
         public int IdSuivi { get; set; }
-        public string? CommentairePedagogique { get; set; } // <-- nullable
-        public double? NoteStage { get; set; } // <-- nullable
+        public string? CommentairePedagogique { get; set; } 
+        public double? NoteStage { get; set; } 
         public DateTime DateSuivi { get; set; }
 
         public int StageId { get; set; }

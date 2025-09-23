@@ -8,7 +8,7 @@ namespace GestionStages.Models
         [Key]
         public int IdStage { get; set; }
         public string TypeStage { get; set; }
-        public string? Theme { get; set; }   // ⚡ doit accepter NULL si en DB y’a des NULL
+        public string? Theme { get; set; }   
         public string? Description { get; set; }
 
         public DateTime DateDebut { get; set; }

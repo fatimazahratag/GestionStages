@@ -9,7 +9,7 @@ namespace GestionStages.Models
         public int IdValidation { get; set; }
         public string Etape { get; set; }
         public string Statut { get; set; }
-        public string? Remarque { get; set; }   // <-- nullable
+        public string? Remarque { get; set; }  
         public DateTime DateValidation { get; set; }
 
         public int StageId { get; set; }

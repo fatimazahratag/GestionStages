@@ -35,14 +35,11 @@ namespace GestionStages.Controllers
             if (etudiant == null)
                 return NotFound("Étudiant non trouvé");
 
-            // 🎓 Filière
             ViewBag.Filiere = etudiant.Filiere ?? "Non définie";
 
-            // 📁 Nombre de stages
             ViewBag.TotalStages = _context.Stages
                 .Count(s => s.EtudiantId == etudiant.IdEtudiant);
 
-            // 📄 Dernière demande de document
             var derniereDemandeDoc = _context.Documents
                 .Where(d => d.EtudiantId == etudiant.IdEtudiant)
                 .OrderByDescending(d => d.DateDepot)
@@ -52,7 +49,6 @@ namespace GestionStages.Controllers
                 ? $"{derniereDemandeDoc.TypeDocument}"
                 : "Aucune demande déposée";
 
-            // 📝 Soutenance
             var soutenance = _context.Soutenances
                 .Include(s => s.Stage)
                 .Where(s => s.Stage.EtudiantId == etudiant.IdEtudiant)
@@ -61,12 +57,10 @@ namespace GestionStages.Controllers
 
             if (soutenance != null)
             {
-                // Note finale
                 ViewBag.NoteFinale = soutenance.NoteFinale.HasValue
                     ? string.Format("{0:0.0}", soutenance.NoteFinale.Value)
                     : "Pas encore attribuée";
 
-                // Date & lieu
                 if (soutenance.NoteFinale.HasValue)
                 {
                     ViewBag.SoutenanceInfo = $"Soutenue le {soutenance.DateSoutenance?.ToString("dd/MM/yyyy")} à {soutenance.Lieu ?? "Lieu non défini"}";
@@ -78,7 +72,6 @@ namespace GestionStages.Controllers
                         : "Pas encore planifiée";
                 }
 
-                // ✅ Statut Sujet
                 ViewBag.StatutSujet = string.IsNullOrEmpty(soutenance.StatutSujet)
                     ? "En attente"
                     : soutenance.StatutSujet;
@@ -153,7 +146,6 @@ namespace GestionStages.Controllers
 
             if (etudiant == null) return NotFound();
 
-            // Mise à jour
             etudiant.NomComplet = model.NomComplet;
             etudiant.Email = model.Email;
             etudiant.Telephone = model.Telephone;
@@ -166,7 +158,6 @@ namespace GestionStages.Controllers
             TempData["Success"] = "Profil mis à jour avec succès ✅";
             return RedirectToAction("Profile");
         }
-        // ✅ Helper: récupérer l'étudiant connecté
         private Etudiant GetCurrentEtudiant()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -175,7 +166,6 @@ namespace GestionStages.Controllers
             return _context.Etudiants.FirstOrDefault(e => e.UtilisateurId == userId);
         }
 
-        // ✅ MesStages
         [HttpGet]
         public IActionResult MesStages()
         {
@@ -186,7 +176,7 @@ namespace GestionStages.Controllers
                 .Include(s => s.Enseignant)
                 .Include(s => s.Organisme)
                 .Where(s => s.EtudiantId == etudiant.IdEtudiant)
-                .OrderByDescending(s => s.DateDebut) // ✅ le plus récent d’abord
+                .OrderByDescending(s => s.DateDebut) 
                 .Select(s => new MesStagesViewModel
                 {
                     IdStage = s.IdStage,
@@ -199,7 +189,6 @@ namespace GestionStages.Controllers
                     NomOrganisme = s.Organisme.NomOrganisme,
                     VilleOrganisme = s.Organisme.Ville,
 
-                    // On calcule l'état ici
                     Etat = !s.ConfirmationEtudiant ? "En attente de confirmation"
                            : DateTime.Now > s.DateFin ? "Terminé"
                            : "En cours"
@@ -222,7 +211,6 @@ namespace GestionStages.Controllers
 
             if (etudiant == null) return NotFound();
 
-            // Récupérer la liste des enseignants
             var enseignants = _context.Enseignants
                 .Select(e => new { e.IdEnseignant, e.NomEnseignant })
                 .ToList();
@@ -241,7 +229,6 @@ namespace GestionStages.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Recharger la liste enseignants en cas d'erreur de validation
                 var enseignants = _context.Enseignants
                     .Select(e => new { e.IdEnseignant, e.NomEnseignant })
                     .ToList();
@@ -276,10 +263,10 @@ namespace GestionStages.Controllers
                 ConfirmationEtudiant = false,
                 EtudiantId = etudiant.IdEtudiant,
                 OrganismeId = organisme.IdOrganisme,
-                EnseignantId = model.EnseignantId, // ✅ add this
+                EnseignantId = model.EnseignantId, 
 
-                NomSignature = etudiant.NomComplet ?? "N/A", // ✅ prevents NULL
-                DateSoumission = DateTime.Now               // ✅ prevents NULL
+                NomSignature = etudiant.NomComplet ?? "N/A",
+                DateSoumission = DateTime.Now               
             };
 
 
@@ -335,46 +322,7 @@ public async Task<IActionResult> GetDemandesStatus()
     return Json(new { success = true, demandes });
 }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> MesDemandes(MesDemandesViewModel model)
-        //{
-        //    var etudiant = GetCurrentEtudiant();
-        //    if (etudiant == null) return RedirectToAction("Login", "Auth");
-
-        //    // Vérifier que TypeDocument est rempli
-        //    if (string.IsNullOrEmpty(model.NouvelleDemande?.TypeDocument))
-        //    {
-        //        TempData["Error"] = "Veuillez sélectionner un type de document.";
-
-        //        model.ListeDemandes = await _context.Documents
-        //            .Where(d => d.EtudiantId == etudiant.IdEtudiant)
-        //            .Select(d => new DemandeViewModel
-        //            {
-        //                Id = d.IdDocument,
-        //                TypeDocument = d.TypeDocument ?? "",
-        //                DateDepot = d.DateDepot,
-        //                Statut = d.Statut ?? "En attente",
-        //                NomFichier = d.NomFichier ?? ""
-        //            })
-        //            .ToListAsync();
-
-        //        return View(model);
-        //    }
-
-        //    var demande = new Document
-        //    {
-        //        TypeDocument = model.NouvelleDemande.TypeDocument,
-        //        DateDepot = DateTime.Now,
-        //        Statut = "En attente",
-        //        EtudiantId = etudiant.IdEtudiant
-        //    };
-
-        //    _context.Documents.Add(demande);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToAction("MesDemandes");
-        //}
+       
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -402,38 +350,7 @@ public async Task<IActionResult> GetDemandesStatus()
                 return View(model);
             }
 
-            // ====== Handle "Dossier de stage" ======
-            //    if (model.NouvelleDemande.TypeDocument == "Dossier de stage")
-            //    {
-            //        var dossierDocs = new[] {
-            //    "Convention de stage",
-            //    "Lettre d'acceptation entreprise",
-            //    "Attestation d'assurance",
-            //    "Fiche d'encadrement"
-            //};
-
-            //        foreach (var type in dossierDocs)
-            //        {
-            //            _context.Documents.Add(new Document
-            //            {
-            //                TypeDocument = type,
-            //                DateDepot = DateTime.Now,
-            //                Statut = "En attente",
-            //                EtudiantId = etudiant.IdEtudiant
-            //            });
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // Single document (e.g., Attestation de scolarité)
-            //        _context.Documents.Add(new Document
-            //        {
-            //            TypeDocument = model.NouvelleDemande.TypeDocument,
-            //            DateDepot = DateTime.Now,
-            //            Statut = "En attente",
-            //            EtudiantId = etudiant.IdEtudiant
-            //        });
-            //    }
+           
             _context.Documents.Add(new Document
             {
                 TypeDocument = model.NouvelleDemande.TypeDocument, // "Dossier de stage"
@@ -449,13 +366,11 @@ public async Task<IActionResult> GetDemandesStatus()
 
 
 
-        // GET: Rapport
         public async Task<IActionResult> Rapport()
         {
             var etudiant = GetCurrentEtudiant();
             if (etudiant == null) return RedirectToAction("Login", "Auth");
 
-            // récupérer la date limite (la plus récente) depuis les documents
             var dateLimite = await _context.Documents
                 .Where(d => d.TypeDocument == "Rapport Final" && d.DateLimiteRapportFinal != null)
                 .Select(d => d.DateLimiteRapportFinal)
@@ -474,7 +389,6 @@ public async Task<IActionResult> GetDemandesStatus()
             return View(model);
         }
 
-        // POST: Rapport
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Rapport(RapportViewModel model)
@@ -488,7 +402,6 @@ public async Task<IActionResult> GetDemandesStatus()
                 return RedirectToAction("Rapport");
             }
 
-            // Sauvegarde fichier dans wwwroot/rapports
             var fileName = $"{Guid.NewGuid()}_{model.Rapport.FileName}";
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/rapports", fileName);
 
@@ -497,7 +410,6 @@ public async Task<IActionResult> GetDemandesStatus()
                 await model.Rapport.CopyToAsync(stream);
             }
 
-            // Sauvegarde en base
             var doc = new Document
             {
                 TypeDocument = "Rapport Final",
@@ -505,7 +417,7 @@ public async Task<IActionResult> GetDemandesStatus()
                 Statut = "Soumis",
                 NomFichier = fileName,
                 EtudiantId = etudiant.IdEtudiant,
-                DateLimiteRapportFinal = model.DateLimiteRapportFinal // ← ici
+                DateLimiteRapportFinal = model.DateLimiteRapportFinal 
             };
 
             _context.Documents.Add(doc);
@@ -524,14 +436,10 @@ public async Task<IActionResult> GetDemandesStatus()
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/rapports", doc.NomFichier);
             if (!System.IO.File.Exists(path)) return NotFound();
 
-            // Peu importe le nom en DB → tu forces l'affichage
             return File(System.IO.File.ReadAllBytes(path), "application/pdf", "Rapport Final.pdf");
         }
 
 
-
-
-        // GET: Télécharger rapport
         public IActionResult TelechargerRapport(int id)
         {
             var doc = _context.Documents.FirstOrDefault(d => d.IdDocument == id);
@@ -543,14 +451,12 @@ public async Task<IActionResult> GetDemandesStatus()
         }
 
 
-        // ✅ Sujets - GET
         [HttpGet]
         public IActionResult Sujets()
         {
             var etudiant = GetCurrentEtudiant();
             if (etudiant == null) return RedirectToAction("Login", "Auth");
 
-            // Chercher le stage + encadrant
             var stage = _context.Stages
                 .Include(st => st.Enseignant)
                 .FirstOrDefault(st => st.EtudiantId == etudiant.IdEtudiant);
@@ -561,7 +467,6 @@ public async Task<IActionResult> GetDemandesStatus()
                 return RedirectToAction("MesStages");
             }
 
-            // Chercher la soutenance liée au stage
             var soutenance = _context.Soutenances
                 .FirstOrDefault(s => s.StageId == stage.IdStage);
 
@@ -577,7 +482,6 @@ public async Task<IActionResult> GetDemandesStatus()
         }
 
 
-        // ✅ Sujets - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AjouterSujet(SujetViewModel model)
@@ -596,7 +500,6 @@ public async Task<IActionResult> GetDemandesStatus()
                     _logger.LogError("Validation error: {Error}", error.ErrorMessage);
                 }
 
-                // ⚡ Recharger le nom de l’encadrant même en cas d’erreur
                 var stageReload = _context.Stages.Include(st => st.Enseignant)
                     .FirstOrDefault(st => st.EtudiantId == etudiant.IdEtudiant);
                 model.NomEncadrant = stageReload?.Enseignant?.NomEnseignant ?? "Non assigné";
@@ -646,7 +549,6 @@ public async Task<IActionResult> GetDemandesStatus()
             return RedirectToAction("Sujets");
         }
 
-//soutenance
 
         [HttpGet]
         public IActionResult MaSoutenance()

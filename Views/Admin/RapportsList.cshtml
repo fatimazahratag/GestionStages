@@ -7,7 +7,6 @@
 
 <h2 class="fw-bold mb-4" style="color:#a87c4f;"><i class="fas fa-file-alt"></i> Rapports Finaux</h2>
 
-<!-- Global Deadline Form -->
 <form asp-action="SetGlobalDeadline" method="post" class="mb-4 d-flex align-items-center gap-2">
     @Html.AntiForgeryToken()
     <label>📅 Date limite pour tous les rapports finaux :</label>
@@ -46,7 +45,6 @@
                 </td>
                 <td>
                     <div class="d-flex gap-2 justify-content-center">
-                        <!-- Changer statut -->
                         <form asp-action="ChangerStatutRapport" method="post" class="d-flex gap-1">
                             <input type="hidden" name="id" value="@r.IdDocument" />
                             <select name="statut" class="form-select form-select-sm">
@@ -59,7 +57,6 @@
                             </button>
                         </form>
 
-                        <!-- Générer PDF -->
                         <a asp-action="GenererDocument" asp-route-id="@r.IdDocument" class="btn btn-sm" style="background-color:#d9534f; color:white; border-radius:50px;">
                             <i class="fas fa-file-pdf"></i>
                         </a>

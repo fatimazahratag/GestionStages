@@ -28,7 +28,6 @@
 
 <br />
 &nbsp;
-<!-- Modal Ajouter Soutenance -->
 <div class="modal fade" id="addSoutenanceModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-l modal-dialog-centered">
         <div class="modal-content shadow-lg rounded-4">
@@ -41,7 +40,6 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-body row g-3">
 
-                    <!-- Étudiant -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Étudiant</label>
                         <select name="IdEtudiant" class="form-select" required>
@@ -53,19 +51,16 @@
                         </select>
                     </div>
 
-                    <!-- Date Soutenance -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Date Soutenance</label>
                         <input type="datetime-local" name="DateSoutenance" class="form-control" required />
                     </div>
 
-                    <!-- Lieu -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Lieu</label>
                         <input type="text" name="Lieu" class="form-control" placeholder="Salle ou adresse" required />
                     </div>
 
-                    <!-- Jury 1 -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Jury 1</label>
                         <select name="Jury1" class="form-select" required>
@@ -77,7 +72,6 @@
                         </select>
                     </div>
 
-                    <!-- Jury 2 -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Jury 2</label>
                         <select name="Jury2" class="form-select" required>
@@ -164,7 +158,6 @@
                 </td>
             </tr>
 
-            <!-- Modal -->
             <div class="modal fade" id="editSoutenance-@s.IdSoutenance" tabindex="-1">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content" style="border-radius:12px;">
@@ -190,7 +183,6 @@
                                     <input type="text" name="Lieu" value="@s.Lieu" class="form-control" required />
                                 </div>
 
-                                    @* ---------- Jury 1 (no <option>) ---------- *@
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Jury 1</label>
 
@@ -222,7 +214,6 @@
                                         <input type="hidden" id="Jury1-@s.IdSoutenance" name="Jury1" value="@s.Jury1" />
                                     </div>
 
-                                    @* ---------- Jury 2 (no <option>) ---------- *@
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Jury 2</label>
 

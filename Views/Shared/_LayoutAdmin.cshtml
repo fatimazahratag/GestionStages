@@ -12,7 +12,6 @@
         if (!string.Equals(controller, currentController, StringComparison.OrdinalIgnoreCase))
             return "";
 
-        // ✅ Vérifie si le nom de l’action contient le mot clé
         return currentAction != null && currentAction.Contains(actionKeyword, StringComparison.OrdinalIgnoreCase)
             ? "active-sidebar"
             : "";
@@ -27,10 +26,8 @@
     <title>@ViewData["Title"] - Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
@@ -45,7 +42,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            background: #3e2723; /* Marron foncé */
+            background: #3e2723; 
             color: white;
             padding-top: 20px;
             transition: all 0.3s;
@@ -67,7 +64,7 @@
                 }
 
         .active-sidebar {
-            background-color: #f5e0c3; /* nude clair */
+            background-color: #f5e0c3;
             color: #3e2723 !important;
         }
 
@@ -147,7 +144,6 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
     <nav class="sidebar bg-brown text-white">
         <h4 class="text-center mb-4"><i class="fas fa-graduation-cap"></i> Admin Panel</h4>
         <ul class="nav flex-column">
@@ -208,7 +204,6 @@
         </ul>
     </nav>
 
-    <!-- Topbar -->
     <div class="topbar d-flex justify-content-between align-items-center p-3 bg-light-brown shadow-sm">
         <div class="fs-5 text-brown">
             <i class="fas fa-tachometer-alt me-2"></i> Tableau de Bord
@@ -224,12 +219,10 @@
         </div>
     </div>
 
-    <!-- Content -->
     <div class="content">
         @RenderBody()
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

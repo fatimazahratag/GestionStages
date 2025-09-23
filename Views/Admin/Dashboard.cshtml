@@ -6,7 +6,6 @@
 
 <div class="container-fluid mt-4">
 
-    <!-- Header / Hero -->
     <div class="row mb-4">
         <div class="col-md-12 text-center">
             <h2>👋 Bonjour, @Model.NomComplet</h2>
@@ -14,7 +13,6 @@
         </div>
     </div>
 
-    <!-- Summary Cards -->
     <div class="row g-4 mb-5">
         <div class="col-md-3">
             <div class="card shadow-sm bg-light-brown text-center p-3">
@@ -46,7 +44,6 @@
         </div>
     </div>
 
-    <!-- Charts Row -->
     <div class="row mb-5">
         <div class="col-md-4">
             <div class="card shadow-sm p-3">
@@ -68,13 +65,11 @@
         </div>
     </div>
 
-    <!-- Alerts -->
     <h4 class="text-brown">⚠️ Alertes</h4>
     <div class="alert alert-warning mt-2" role="alert">
         @ViewBag.LateReports rapports finaux sont en retard. <a href="/Admin/RapportsList">Voir détails</a>
     </div>
 
-    <!-- Upcoming Deadlines -->
     <h4 class="text-brown mt-4">📅 Prochains délais</h4>
     <ul class="list-group mb-5">
         @foreach (var doc in ViewBag.UpcomingDeadlines)
@@ -86,7 +81,6 @@
         }
     </ul>
 
-    <!-- Recent Documents Table -->
     <h4 class="text-brown">📋 Dernières actions</h4>
     <table class="table table-hover shadow-sm rounded mt-3">
         <thead style="background-color:#4b3b2b; color:white;">
@@ -112,7 +106,6 @@
 
 </div>
 
-<!-- Chart.js Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const etudiantsCtx = document.getElementById('chartEtudiants');

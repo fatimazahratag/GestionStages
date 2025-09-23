@@ -6,7 +6,7 @@
         public int SujetId { get; set; }
         public string SujetTitre { get; set; }
         public string EtudiantNom { get; set; }
-        public string Filiere { get; set; }  // nouvelle propriété
+        public string Filiere { get; set; }  
         public double? Note { get; set; }
     }
 }

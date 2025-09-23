@@ -8,7 +8,6 @@
     display: flex;
 }
 
-/* Sidebar */
 .sidebar {
     width: 240px;
     background: #fff;
@@ -44,7 +43,6 @@
     margin-right: 10px;
 }
 
-/* Main content */
 .main-content {
     margin-left: 240px;
     flex-grow: 1;
@@ -79,7 +77,6 @@
     font-weight: 600;
 }
 
-/* Stats cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

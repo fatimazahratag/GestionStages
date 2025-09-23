@@ -114,20 +114,19 @@
 
 .profile-label {
     font-weight: 600;
-    color: #E8C872; /* gold/yellow color */
+    color: #E8C872; 
     min-width: 140px;
 }
 
 .profile-value {
     font-weight: 400;
-    color: #1C1C1E; /* dark text color */
+    color: #1C1C1E;
 }
 
     .btn-gold:hover {
         background-color: #c3a654;
     }
 
-/* Responsive */
 @media (max-width: 640px) {
     .profile-header {
         flex-direction: column;

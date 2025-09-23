@@ -7,8 +7,8 @@ namespace GestionStages.Models.ViewModels
         public int IdStage { get; set; }
         public int IdSoutenance { get; set; }
 
-        public string NomEncadrant { get; set; } // juste pour affichage
-        public string NomEtudiant { get; set; } // juste pour affichage
+        public string NomEncadrant { get; set; } 
+        public string NomEtudiant { get; set; } 
 
         public string EtudiantNom { get; set; }
 
@@ -24,7 +24,7 @@ namespace GestionStages.Models.ViewModels
         public string Statut { get; set; } = "En attente";
 
 
-        public decimal? Note { get; set; } // visible uniquement après soutenance
+        public decimal? Note { get; set; } 
 
         public int Id { get; set; }
         public string Titre { get; set; }

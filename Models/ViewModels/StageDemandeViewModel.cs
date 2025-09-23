@@ -5,7 +5,6 @@ namespace GestionStages.Models.ViewModels
 {
     public class StageDemandeViewModel
     {
-        // ORGANISME
         [Required(ErrorMessage = "Veuillez sélectionner un enseignant")]
         public int EnseignantId { get; set; }
 
@@ -38,7 +37,6 @@ namespace GestionStages.Models.ViewModels
         [Phone]
         public string TelephoneResponsableOrganisme { get; set; }
 
-        // STAGE
         [Required]
         public string Sujet { get; set; }
 
@@ -50,7 +48,7 @@ namespace GestionStages.Models.ViewModels
         [DataType(DataType.Date)]
         public DateTime DateFin { get; set; }
 
-        public string TypeStage { get; set; } // Dropdown option
+        public string TypeStage { get; set; }
 
         public bool AutorisationTraitement { get; set; }
     }

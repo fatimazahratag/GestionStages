@@ -20,7 +20,7 @@
     <tbody>
         @foreach (var r in Model)
         {
-            var isLate = r.DateDepot.HasValue && r.DateDepot > r.DateDepot; // ou si tu as une DateLimite
+            var isLate = r.DateDepot.HasValue && r.DateDepot > r.DateDepot; 
                                                                             <tr class="@(isLate ? "table-danger" : "")">
                                                                                 <td>@r.EtudiantNom</td>
                                                                                 <td>@r.Titre</td>
@@ -32,12 +32,10 @@
                                                                                 </td>
                                                                                 <td>
                                                                                     <div class="d-flex gap-2 justify-content-center">
-                                                                                        <!-- Télécharger -->
                                                                                         <a asp-action="Telecharger" asp-route-id="@r.Id" class="btn btn-sm" style="background-color:#F2EAD3; color:white; border-radius:50px;">
                                                                                             📥 
                                                                                         </a>
 
-                        <!-- Changer statut -->
                         <form asp-action="ChangerStatut" method="post" class="d-flex gap-1">
                             <input type="hidden" name="id" value="@r.Id" />
                             <select name="statut" class="form-select form-select-sm">

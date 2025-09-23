@@ -19,22 +19,7 @@ namespace GestionStages.Controllers
             _context = context;
         }
 
-        // Dashboard
-        //public IActionResult Dashboard()
-        //{
-        //    var userId = HttpContext.Session.GetInt32("UserId");
-        //    if (userId == null) return RedirectToAction("Login", "Auth", new { role = "Admin" });
-
-        //    var admin = _context.Admins.FirstOrDefault(a => a.UtilisateurId == userId);
-        //    if (admin == null) return NotFound();
-
-        //    ViewBag.CountEtudiants = _context.Etudiants.Count();
-        //    ViewBag.CountEnseignants = _context.Enseignants.Count();
-        //    ViewBag.CountStages = _context.Stages.Count();
-        //    ViewBag.CountSoutenances = _context.Soutenances.Count();
-
-        //    return View(admin);
-        //}
+        
         public IActionResult Dashboard()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -43,39 +28,31 @@ namespace GestionStages.Controllers
             var admin = _context.Admins.FirstOrDefault(a => a.UtilisateurId == userId);
             if (admin == null) return NotFound();
 
-            // Counts
             ViewBag.CountEtudiants = _context.Etudiants.Count();
             ViewBag.CountEnseignants = _context.Enseignants.Count();
             ViewBag.CountDocuments = _context.Documents.Count();
             ViewBag.CountSoutenances = _context.Soutenances.Count();
 
-            // Upcoming deadlines (Rapport Final from today onward)
             ViewBag.UpcomingDeadlines = _context.Documents
                 .Include(d => d.Etudiant)
                 .Where(d => d.TypeDocument == "Rapport Final" && d.DateLimiteRapportFinal >= DateTime.Today)
                 .OrderBy(d => d.DateLimiteRapportFinal)
                 .ToList();
 
-            // Late reports count
             ViewBag.LateReports = _context.Documents
                 .Where(d => d.TypeDocument == "Rapport Final" && d.DateDepot > d.DateLimiteRapportFinal)
                 .Count();
 
-            // Recent documents (last 5)
             ViewBag.RecentDocuments = _context.Documents
                 .Include(d => d.Etudiant)
                 .OrderByDescending(d => d.DateDepot)
                 .Take(5)
                 .ToList();
 
-            // Chart data
             ViewBag.Etudiants1A = _context.Etudiants.Count(e => e.Niveau == "1ère année");
             ViewBag.Etudiants2A = _context.Etudiants.Count(e => e.Niveau == "2ème année");
             ViewBag.Etudiants3A = _context.Etudiants.Count(e => e.Niveau == "3ème année");
 
-            //ViewBag.StagesInfo = _context.Stages.Count(e => e.Filiere == "Informatique");
-            //ViewBag.StagesGestion = _context.Stages.Count(e => e.Filiere == "Gestion");
-            //ViewBag.StagesMarketing = _context.Stages.Count(e => e.Filiere == "Marketing");
 
             ViewBag.DocEnAttente = _context.Documents.Count(d => d.Statut == "En attente");
             ViewBag.DocEnPreparation = _context.Documents.Count(d => d.Statut == "En préparation");
@@ -84,7 +61,6 @@ namespace GestionStages.Controllers
             return View(admin);
         }
 
-        // Méthode pour récupérer le nom complet dans ViewBag
         public override void OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
@@ -104,7 +80,6 @@ namespace GestionStages.Controllers
         }
 
 
-        // Profile
         public IActionResult Profile()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -121,8 +96,6 @@ namespace GestionStages.Controllers
         
 
 
-        // GET: Edit profile
-        // GET: Edit profile
         [HttpGet]
         public IActionResult Edit()
         {
@@ -137,7 +110,6 @@ namespace GestionStages.Controllers
             return View(admin);
         }
 
-        // POST: Edit profile
         [HttpPost]
         public IActionResult Edit(int IdAdmin, string NomComplet, string Email, string Telephone)
         {
@@ -147,15 +119,13 @@ namespace GestionStages.Controllers
 
             if (admin == null) return NotFound();
 
-            // Mettre à jour Admin
             admin.NomComplet = NomComplet;
             admin.Email = Email;
             admin.Telephone = Telephone;
 
-            // Mettre à jour Utilisateur lié
             if (admin.Utilisateur != null)
             {
-                admin.Utilisateur.NomUtilisateur = Email; // synchro login
+                admin.Utilisateur.NomUtilisateur = Email; 
             }
 
             _context.SaveChanges();
@@ -182,7 +152,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("Profile");
             }
 
-            // Mettre à jour dans les deux tables
             user.MotDePasse = NewPassword;
             admin.Password = NewPassword;
 
@@ -192,33 +161,28 @@ namespace GestionStages.Controllers
             return RedirectToAction("Profile");
         }
 
-        // Students
-        // LISTE étudiants
         public IActionResult EtudiantsList()
         {
             var students = _context.Etudiants.ToList();
-            return View(students);   // Vue attend IEnumerable<Etudiant>
+            return View(students);  
         }
 
-        // DETAILS étudiant
         public IActionResult EtudiantDetails(int id)
         {
             var student = _context.Etudiants.FirstOrDefault(e => e.IdEtudiant == id);
             if (student == null) return NotFound();
-            return View("EtudiantDetails", student);   // Vue attend Etudiant
+            return View("EtudiantDetails", student);  
         }
 
-        // GET: Edit étudiant
         [HttpGet]
         public IActionResult EditEtudiant(int id)
         {
             var student = _context.Etudiants.FirstOrDefault(e => e.IdEtudiant == id);
             if (student == null) return NotFound();
-            return View(student); // ⚡ Ici tu envoies UN seul étudiant
+            return View(student); 
         }
 
 
-        // POST: Edit étudiant
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditEtudiant(int IdEtudiant, string NomComplet, string CNE, string Email, string Telephone, string Module, string Niveau)
@@ -241,14 +205,12 @@ namespace GestionStages.Controllers
 
 
 
-        // Teachers
         public IActionResult EnseignantsList()
         {
             var teachers = _context.Enseignants.ToList();
             return View(teachers);
         }
 
-        // GET: Admin/EditEnseignant/5
         [HttpGet]
         public IActionResult EditEnseignant(int id)
         {
@@ -257,11 +219,9 @@ namespace GestionStages.Controllers
             {
                 return NotFound();
             }
-            return View(enseignant); // Optional if you have a separate edit page
+            return View(enseignant); 
         }
 
-        // POST: Admin/EditEnseignant
-        // POST: Admin/EditEnseignant from modal
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditEnseignant(int IdEnseignant, string NomEnseignant, string Email, string Telephone, string DepartementAttache, string Filiere)
@@ -273,7 +233,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("EnseignantsList");
             }
 
-            // Update properties
             enseignant.NomEnseignant = NomEnseignant;
             enseignant.Email = Email;
             enseignant.Telephone = Telephone;
@@ -284,7 +243,6 @@ namespace GestionStages.Controllers
 
             TempData["Success"] = "Enseignant modifié avec succès.";
 
-            // Redirect back to the same list page
             return RedirectToAction("EnseignantsList");
         }
         [HttpPost]
@@ -302,7 +260,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("EnseignantsList");
             }
 
-            // Vérifier si un utilisateur existe déjà avec ce mail
             var existingUser = _context.Utilisateurs.FirstOrDefault(u => u.NomUtilisateur == Email);
             if (existingUser != null)
             {
@@ -310,18 +267,16 @@ namespace GestionStages.Controllers
                 return RedirectToAction("EnseignantsList");
             }
 
-            // 1. Créer l’utilisateur associé à l’enseignant
             var utilisateur = new Utilisateur
             {
                 NomUtilisateur = Email,
-                MotDePasse = "123456",   // ⚠️ à remplacer par un hash plus tard
+                MotDePasse = "123456",   
                 Role = "Enseignant"
             };
 
             _context.Utilisateurs.Add(utilisateur);
-            _context.SaveChanges(); // On doit sauver pour récupérer l’Id
+            _context.SaveChanges(); 
 
-            // 2. Créer l’enseignant et le lier au compte utilisateur
             var enseignant = new Enseignant
             {
                 NomEnseignant = NomEnseignant,
@@ -342,21 +297,7 @@ namespace GestionStages.Controllers
 
 
 
-        // Stages
-        //public IActionResult StagesList()
-        //{
-        //    var stages = _context.Stages.ToList();
-        //    return View(stages);
-        //}
-
-        //public IActionResult StageDetails(int id)
-        //{
-        //    var stage = _context.Stages.FirstOrDefault(s => s.IdStage == id);
-        //    if (stage == null) return NotFound();
-        //    return View(stage);
-        //}
-
-        // Soutenances
+       
         public IActionResult SoutenanceList()
         {
             var soutenances = _context.Soutenances
@@ -394,7 +335,6 @@ namespace GestionStages.Controllers
             var start = DateSoutenance.Value;
             var end = start.AddMinutes(30);
 
-            // Vérifier conflits
             var conflicts = _context.Soutenances
                 .Where(x => x.IdSoutenance != IdSoutenance && x.DateSoutenance.HasValue)
                 .Where(x =>
@@ -414,7 +354,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SoutenanceList");
             }
 
-            // Mise à jour
             s.DateSoutenance = DateSoutenance;
             s.Lieu = Lieu;
             s.Jury1 = Jury1;
@@ -426,7 +365,6 @@ namespace GestionStages.Controllers
         }
 
 
-        //------
         [HttpGet]
         public IActionResult GenerateSoutenancePDF()
         {
@@ -454,7 +392,6 @@ namespace GestionStages.Controllers
 
             pdfHtml += "</table>";
 
-            // Using SelectPdf for simplicity
             var converter = new HtmlToPdf();
             var pdf = converter.ConvertHtmlString(pdfHtml);
             return File(pdf.Save(), "application/pdf", "Soutenances.pdf");
@@ -478,7 +415,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SoutenanceList");
             }
 
-            // Vérifier si l'étudiant existe
             var etudiant = _context.Etudiants.FirstOrDefault(e => e.IdEtudiant == IdEtudiant);
             if (etudiant == null)
             {
@@ -486,7 +422,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SoutenanceList");
             }
 
-            // Vérifier le stage
             var stage = _context.Stages.FirstOrDefault(s => s.EtudiantId == IdEtudiant);
             if (stage == null)
             {
@@ -499,7 +434,6 @@ namespace GestionStages.Controllers
                 _context.SaveChanges();
             }
 
-            // Vérifier si une soutenance existe déjà pour ce stage
             var existingSoutenance = _context.Soutenances.FirstOrDefault(s => s.StageId == stage.IdStage);
             if (existingSoutenance != null)
             {
@@ -507,7 +441,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SoutenanceList");
             }
 
-            // Vérifier conflits horaires et lieux (30 minutes par soutenance)
             var startTime = DateSoutenance.Value;
             var endTime = startTime.AddMinutes(30);
 
@@ -523,7 +456,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SoutenanceList");
             }
 
-            // Vérifier que les jurys ne sont pas occupés à ce créneau
             bool juryConflit = _context.Soutenances.Any(s =>
                 s.DateSoutenance.HasValue &&
                 ((s.Jury1 == Jury1 || s.Jury2 == Jury1 || s.Jury1 == Jury2 || s.Jury2 == Jury2) &&
@@ -537,7 +469,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SoutenanceList");
             }
 
-            // Création de la soutenance
             var soutenance = new Soutenance
             {
                 StageId = stage.IdStage,
@@ -554,10 +485,6 @@ namespace GestionStages.Controllers
             return RedirectToAction("SoutenanceList");
         }
 
-
-        // 📌 Liste des demandes (sauf rapport final)
-        // 📌 Liste des demandes (sauf rapport final ET sauf statuts "Soumis")
-        // 📌 Liste des demandes (hors rapport final et hors soumis)
         public IActionResult DemandesList()
         {
             var demandes = _context.Documents
@@ -570,20 +497,7 @@ namespace GestionStages.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateDemandeStatus(int id, string statut)
-        //{
-        //    var doc = await _context.Documents.FindAsync(id);
-        //    if (doc == null) return NotFound();
-
-        //    doc.Statut = statut; // "Validé" ou "Refusé"
-        //    await _context.SaveChangesAsync();
-
-        //    return Json(new { success = true });
-        //}
-
-
-        // Changer le statut d'une demande
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangerStatut(int id, string statut)
@@ -598,7 +512,6 @@ namespace GestionStages.Controllers
             return RedirectToAction("DemandesList");
         }
 
-        // Générer PDF d'une demande
         [HttpGet]
         public IActionResult GenererDocument(int id)
         {
@@ -608,7 +521,6 @@ namespace GestionStages.Controllers
 
             if (doc == null) return NotFound();
             var etu = doc.Etudiant;
-            // Handle "Rapport Final" directly
             if (doc.TypeDocument?.Trim().ToLower() == "rapport final")
             {
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/rapports", doc.NomFichier);
@@ -628,14 +540,12 @@ namespace GestionStages.Controllers
                 .FirstOrDefault(s => s.EtudiantId == doc.EtudiantId);
 
 
-            // Path absolu du logo
             var logoPath1 = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/logoencgo.jpg");
             var logoPath2 = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/logo2.jpg");
 
             var logoFileUrl1 = $"file:///{logoPath1.Replace("\\", "/")}";
             var logoFileUrl2 = $"file:///{logoPath2.Replace("\\", "/")}";
 
-            // Dictionnaire des valeurs à injecter
             var values = new Dictionary<string, string>
                 {
                     { "NomComplet", doc.Etudiant.NomComplet },
@@ -650,16 +560,16 @@ namespace GestionStages.Controllers
                     { "EncadrantUniv", stage?.Enseignant?.NomEnseignant ?? "[Encadrant Univ]" },
                 { "DateDebut", stage != null ? stage.DateDebut.ToString("dd/MM/yyyy") : "[Date Début]" },
                 { "DateFin", stage != null ? stage.DateFin.ToString("dd/MM/yyyy") : "[Date Fin]" },
-                { "DateTime", DateTime.Now.ToString("dd/MM/yyyy") }, // jour/mois/année actuels
-                { "Annee", DateTime.Now.Year.ToString() }, // année seulement
-                        { "LogoPath", logoFileUrl1 },  // Logo gauche
-                    { "LogoPath2", logoFileUrl2 }  // Logo droit
+                { "DateTime", DateTime.Now.ToString("dd/MM/yyyy") }, 
+                { "Annee", DateTime.Now.Year.ToString() }, 
+                        { "LogoPath", logoFileUrl1 }, 
+                    { "LogoPath2", logoFileUrl2 }  
 
 
                 };
 
 
-            string docType = doc.TypeDocument?.Trim().ToLower(); // enlever espaces + mettre en minuscule
+            string docType = doc.TypeDocument?.Trim().ToLower(); 
             string html = "";
 
             switch (docType)
@@ -703,17 +613,14 @@ namespace GestionStages.Controllers
         [HttpGet]
         public IActionResult GenererDossierStage(int etudiantId)
         {
-            // 1️⃣ Get the student
             var etu = _context.Etudiants.FirstOrDefault(e => e.IdEtudiant == etudiantId);
             if (etu == null) return NotFound();
 
-            // 2️⃣ Get stage info (if any)
             var stage = _context.Stages
                 .Include(s => s.Organisme)
                 .Include(s => s.Enseignant)
                 .FirstOrDefault(s => s.EtudiantId == etudiantId);
 
-            // 3️⃣ Prepare values for templates
             var values = new Dictionary<string, string>
     {
         { "NomComplet", etu.NomComplet },
@@ -741,7 +648,6 @@ namespace GestionStages.Controllers
         { "FonctionEncadrantEntreprise", "[Fonction]" }
     };
 
-            // 4️⃣ List of templates to generate
             var templates = new Dictionary<string, string>
     {
         { "Convention de stage", "ConventionStage.html" },
@@ -750,13 +656,11 @@ namespace GestionStages.Controllers
         { "Attestation d'assurance", "AttestationAssurance.html" }
     };
 
-            // 5️⃣ Create temporary folder
             var tempPath = Path.Combine(Path.GetTempPath(), $"DossierStage_{etu.IdEtudiant}_{DateTime.Now:yyyyMMddHHmmss}");
             Directory.CreateDirectory(tempPath);
 
             HtmlToPdf converter = new HtmlToPdf();
 
-            // 6️⃣ Generate PDFs
             foreach (var tpl in templates)
             {
                 string html = LoadTemplate(tpl.Value, values);
@@ -765,14 +669,11 @@ namespace GestionStages.Controllers
                 pdf.Save(fileName);
             }
 
-            // 7️⃣ Create ZIP
             string zipPath = Path.Combine(Path.GetTempPath(), $"DossierStage_{etu.IdEtudiant}_{DateTime.Now:yyyyMMddHHmmss}.zip");
             ZipFile.CreateFromDirectory(tempPath, zipPath);
 
-            // 8️⃣ Clean up temp folder
             Directory.Delete(tempPath, true);
 
-            // 9️⃣ Return ZIP
             byte[] fileBytes = System.IO.File.ReadAllBytes(zipPath);
             return File(fileBytes, "application/zip", $"DossierStage_{etu.NomComplet}.zip");
         }
@@ -786,7 +687,6 @@ namespace GestionStages.Controllers
 
             if (!System.IO.File.Exists(path))
             {
-                // Debug info
                 throw new FileNotFoundException($"Template introuvable: {path}");
             }
 
@@ -816,7 +716,6 @@ namespace GestionStages.Controllers
 
 
 
-        // 📌 Liste des rapports finaux
         public IActionResult RapportsList()
         {
             var rapports = _context.Documents
@@ -838,18 +737,16 @@ namespace GestionStages.Controllers
                 doc.DateLimiteRapportFinal = deadline;
                 _context.SaveChanges();
             }
-            return RedirectToAction("RapportsList"); // reload page
+            return RedirectToAction("RapportsList"); 
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SetGlobalDeadline(DateTime deadline)
         {
-            // Get all "Rapport Final" documents
             var rapports = _context.Documents
                             .Where(d => d.TypeDocument == "Rapport Final")
                             .ToList();
 
-            // Update each document's DateLimiteRapportFinal
             foreach (var doc in rapports)
             {
                 doc.DateLimiteRapportFinal = deadline;
@@ -883,7 +780,6 @@ namespace GestionStages.Controllers
         [HttpPost]
         public IActionResult DefinirDateLimiteRapport(DateTime dateLimite)
         {
-            // récupérer tous les documents de type "Rapport Final"
             var rapports = _context.Documents
                 .Where(d => d.TypeDocument == "Rapport Final")
                 .ToList();
@@ -896,7 +792,7 @@ namespace GestionStages.Controllers
             _context.SaveChanges();
 
             TempData["Success"] = "✅ Date limite définie avec succès.";
-            return RedirectToAction("RapportsList"); // ← ta vue admin
+            return RedirectToAction("RapportsList"); 
         }
 
         [HttpGet]
@@ -905,14 +801,12 @@ namespace GestionStages.Controllers
             var doc = _context.Documents.FirstOrDefault(d => d.IdDocument == id);
             if (doc == null) return NotFound();
 
-            // Vérifier que c'est un rapport final
             if (doc.TypeDocument.Trim().ToLower() != "rapportfinal")
             {
                 TempData["Error"] = "Ce document n'est pas un rapport final.";
                 return RedirectToAction("RapportsList");
             }
 
-            // Chemin du fichier uploadé
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", doc.NomFichier);
             if (!System.IO.File.Exists(filePath))
             {
@@ -920,23 +814,13 @@ namespace GestionStages.Controllers
                 return RedirectToAction("RapportsList");
             }
 
-            // Retourner le fichier PDF
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
             return File(fileBytes, "application/pdf", doc.NomFichier);
         }
 
 
 
-        //---------
-        //public IActionResult SujetsList()
-        //{
-        //    var sujets = _context.Suivis
-        //                  .Include(s => s.Enseignant)
-        //                  .ToList();
-        //    return View(sujets);
-        //}
-        // ✅ Liste des sujets
-        // GET: Liste des sujets
+       
         [HttpGet]
         public IActionResult SujetsList()
         {
@@ -957,7 +841,6 @@ namespace GestionStages.Controllers
                 })
                 .ToList();
 
-            // 🔹 Remplir les enseignants pour le dropdown
             ViewBag.Enseignants = _context.Enseignants
                 .Include(e => e.Stages)
                 .ToList();
@@ -965,19 +848,13 @@ namespace GestionStages.Controllers
             return View(sujets);
         }
 
-
-
-
-
-        // POST: Affecter encadrant
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AffecterEncadrant(int idSoutenance, int idEnseignant)
         {
-            // Charger la soutenance avec son Stage et l'Etudiant
             var soutenance = _context.Soutenances
                 .Include(s => s.Stage)
-                    .ThenInclude(st => st.Etudiant) // ⚡ Important pour éviter le null
+                    .ThenInclude(st => st.Etudiant) 
                 .FirstOrDefault(s => s.IdSoutenance == idSoutenance);
 
             if (soutenance == null || soutenance.Stage == null || soutenance.Stage.Etudiant == null)
@@ -996,7 +873,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SujetsList");
             }
 
-            // Vérifier max 4 étudiants par enseignant
             int nbEtudiants = enseignant.Stages.Count;
             if (nbEtudiants >= 4)
             {
@@ -1004,7 +880,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("SujetsList");
             }
 
-            // Affecter l'enseignant
             soutenance.Stage.EnseignantId = idEnseignant;
             _context.SaveChanges();
 
@@ -1013,7 +888,6 @@ namespace GestionStages.Controllers
         }
 
 
-        // GET: Supprimer sujet
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SupprimerSujet(int idSoutenance)

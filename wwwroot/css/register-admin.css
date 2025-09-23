@@ -30,7 +30,6 @@ html, body {
     }
 }
 
-/* Card élégante */
 .register-card {
     background: #ffffff;
     padding: 40px;
@@ -47,7 +46,6 @@ html, body {
         font-size: 1.7rem;
     }
 
-/* Pile verticale des champs */
 .form-stack .form-group {
     margin-bottom: 22px;
 }
@@ -79,7 +77,6 @@ input {
     font-size: 0.85rem;
 }
 
-/* Bouton */
 .btn-submit {
     width: 100%;
     padding: 14px;

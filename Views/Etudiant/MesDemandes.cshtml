@@ -19,7 +19,6 @@
         margin: auto;
     }
 
-    /* === Bouton centré === */
     .btn-center {
         text-align: center;
         margin-top: 1rem;
@@ -40,7 +39,6 @@
             transform: scale(1.05);
         }
 
-    /* === Style du select === */
     .custom-select {
         appearance: none;
         -webkit-appearance: none;
@@ -63,7 +61,6 @@
             border-color: var(--dark);
         }
 
-    /* === Table design moderne === */
     .custom-table {
         width: 100%;
         border-collapse: separate;
@@ -91,7 +88,6 @@
             font-weight: 500;
         }
 
-    /* Badges avec icônes */
     .badge {
         display: inline-flex;
         align-items: center;
@@ -157,7 +153,6 @@
             typeSelect.addEventListener('change', function() {
                 const value = this.value;
 
-                // Masquer tous les champs d'abord
                 conventionFields.style.display = 'none';
                 dossierFields.style.display = 'none';
 
@@ -167,7 +162,6 @@
                 else if(value === 'Dossier de stage'){
                     dossierFields.style.display = 'block';
                 }
-                // Attestation de scolarité ou autre -> aucun champ supplémentaire
             });
 
                     function rafraichirStatuts() {
@@ -196,7 +190,6 @@
                     });
             }
 
-            // Vérifie toutes les 5 secondes
             setInterval(rafraichirStatuts, 5000);
         </script>
 

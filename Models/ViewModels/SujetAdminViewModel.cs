@@ -6,7 +6,7 @@ namespace GestionStages.Models.ViewModels
     {
         public int IdStage { get; set; }
 
-        public string NomEtudiant { get; set; } // pour affichage
+        public string NomEtudiant { get; set; } 
 
         public string NomEncadrant { get; set; } = "Non affecté";
 

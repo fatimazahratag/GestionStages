@@ -22,66 +22,7 @@ namespace GestionStages.Controllers
             ViewBag.Role = role;
             return View();
         }
-        //[HttpPost]
-        //public IActionResult Login(LoginViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        ViewBag.Role = model.Role;
-        //        return View(model);
-        //    }
-
-        //    var user = _context.Utilisateurs.FirstOrDefault(u =>
-        //        u.NomUtilisateur == model.NomUtilisateur &&
-        //        u.MotDePasse == model.MotDePasse &&
-        //        u.Role == model.Role);
-
-        //    if (user == null)
-        //    {
-        //        ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe incorrect.");
-        //        ViewBag.Role = model.Role;
-        //        return View(model);
-        //    }
-        //    HttpContext.Session.SetInt32("UserId", user.IdUtilisateur);
-
-        //    switch (user.Role)
-        //    {
-        //        case "Etudiant":
-        //            var etu = _context.Etudiants.FirstOrDefault(e => e.UtilisateurId == user.IdUtilisateur);
-        //            if (etu == null)
-        //            {
-        //                ModelState.AddModelError("", "Profil étudiant introuvable.");
-        //                ViewBag.Role = model.Role;
-        //                return View(model);
-        //            }
-        //            return RedirectToAction("Index", "Etudiant", new { id = etu.IdEtudiant });
-
-        //        case "Enseignant":
-        //            var ens = _context.Enseignants.FirstOrDefault(e => e.UtilisateurId == user.IdUtilisateur);
-        //            if (ens == null)
-        //            {
-        //                ModelState.AddModelError("", "Profil enseignant introuvable.");
-        //                ViewBag.Role = model.Role;
-        //                return View(model);
-        //            }
-        //            return RedirectToAction("Index", "Enseignant", new { id = ens.IdEnseignant });
-
-        //        case "Admin":
-        //            var adm = _context.Admins.FirstOrDefault(a => a.UtilisateurId == user.IdUtilisateur);
-        //            if (adm == null)
-        //            {
-        //                ModelState.AddModelError("", "Profil admin introuvable.");
-        //                ViewBag.Role = model.Role;
-        //                return View(model);
-        //            }
-        //            return RedirectToAction("Index", "Admin", new { id = adm.IdAdmin });
-
-        //        default:
-        //            ModelState.AddModelError("", "Rôle inconnu.");
-        //            ViewBag.Role = model.Role;
-        //            return View(model);
-        //    }
-        //}
+       
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
         {
@@ -103,7 +44,6 @@ namespace GestionStages.Controllers
                 return View(model);
             }
 
-            // ✅ Stocker l'ID de l'utilisateur dans la session
             HttpContext.Session.SetInt32("UserId", user.IdUtilisateur);
 
             switch (user.Role)
@@ -145,7 +85,6 @@ namespace GestionStages.Controllers
             }
         }
 
-        // --- REGISTER ETUDIANT ---
         [HttpGet]
         public IActionResult RegisterEtudiant()
         {
@@ -164,7 +103,6 @@ namespace GestionStages.Controllers
                 return View(model);
             }
 
-            // Créer l'utilisateur en premier
             var user = new Utilisateur
             {
                 NomUtilisateur = model.CNE,
@@ -173,7 +111,7 @@ namespace GestionStages.Controllers
             };
 
             _context.Utilisateurs.Add(user);
-            _context.SaveChanges();  // Important : sauvegarder pour générer l'IdUtilisateur
+            _context.SaveChanges();  
 
             var etudiant = new Etudiant
             {
@@ -193,7 +131,6 @@ namespace GestionStages.Controllers
             return RedirectToAction("Login", new { role = "Etudiant" });
         }
 
-        // REGISTER ENSEIGNANT
         [HttpGet]
         public IActionResult RegisterEnseignant()
         {
@@ -234,7 +171,6 @@ namespace GestionStages.Controllers
 
             return RedirectToAction("Login", new { role = "Enseignant" });
         }
-        // REGISTER ADMIN
 
 
         [HttpGet]

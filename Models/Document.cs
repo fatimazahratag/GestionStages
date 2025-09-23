@@ -5,10 +5,10 @@ namespace GestionStages.Models
     {
         [Key]
         public int IdDocument { get; set; }
-        public string? NomFichier { get; set; }  // <-- nullable
-        public string? TypeDocument { get; set; } // <-- nullable
+        public string? NomFichier { get; set; }  
+        public string? TypeDocument { get; set; } 
         public DateTime DateDepot { get; set; }
-        public string Statut { get; set; } = "En attente"; // valeur par défaut
+        public string Statut { get; set; } = "En attente";
 
         public int? StageId { get; set; }
         public Stage Stage { get; set; }

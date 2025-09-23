@@ -22,7 +22,6 @@ namespace GestionStages.Controllers
 
 
 
-        // ----------- Dashboard -----------
         public IActionResult Dashboard()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -38,26 +37,17 @@ namespace GestionStages.Controllers
 
             var stages = enseignant.Stages ?? new List<Stage>();
 
-            // IDs of students safely (non-nullable)
             var etudiantsIds = stages
                 .Where(s => s.EtudiantId != null)
                 .Select(s => s.EtudiantId)
                 .Distinct()
                 .ToList();
 
-            // --- Cards ---
             ViewBag.TotalEtudiants = etudiantsIds.Count;
             ViewBag.TotalStages = stages.Count;
             ViewBag.TotalSoutenances = _context.Soutenances
                 .Count(s => s.Stage.EnseignantId == enseignant.IdEnseignant);
 
-            // --- Recent Documents ---
-            
-
-            // --- Documents status for charts ---
-        
-
-            // Optional: Filieres and stages per filiere for charts
             ViewBag.Filieres = new List<string> { "1ère année", "2ème année", "3ème année" };
             ViewBag.StageCountsByFiliere = new Dictionary<string, int> { { "1ère année", 0 }, { "2ème année", 0 }, { "3ème année", 0 } };
 
@@ -67,7 +57,6 @@ namespace GestionStages.Controllers
 
 
 
-        // ----------- Profil -----------
         public IActionResult Profil()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -82,7 +71,6 @@ namespace GestionStages.Controllers
             return View(enseignant);
         }
 
-        // ----------- Edit Profil -----------
         [HttpGet]
         public IActionResult Edit()
         {
@@ -92,7 +80,7 @@ namespace GestionStages.Controllers
             var enseignant = _context.Enseignants.FirstOrDefault(e => e.UtilisateurId == userId);
             if (enseignant == null) return NotFound();
 
-            return View("Edit", enseignant); // Edit.cshtml
+            return View("Edit", enseignant); 
         }
 
         [HttpPost]
@@ -135,8 +123,7 @@ namespace GestionStages.Controllers
                 return RedirectToAction("Profil");
             }
 
-            // Optionnel : hasher le mot de passe si nécessaire
-            user.MotDePasse = NewPassword; // ou HasherPassword(NewPassword) si tu utilises un hash
+            user.MotDePasse = NewPassword;
 
             _context.SaveChanges();
 
@@ -144,7 +131,6 @@ namespace GestionStages.Controllers
             return RedirectToAction("Profil");
         }
 
-        // GET: EditProfil
         public IActionResult EditProfil()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -157,7 +143,6 @@ namespace GestionStages.Controllers
             return View(enseignant);
         }
 
-        // POST: EditProfil
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditProfil(Enseignant model)
@@ -171,7 +156,6 @@ namespace GestionStages.Controllers
                 return RedirectToAction("EditProfil");
             }
 
-            // Mise à jour des champs
             enseignant.NomEnseignant = model.NomEnseignant;
             enseignant.Email = model.Email;
             enseignant.Telephone = model.Telephone;
@@ -185,7 +169,6 @@ namespace GestionStages.Controllers
             return RedirectToAction("Profil");
         }
 
-        // ----------- List des sujets de ses étudiants -----------
         public IActionResult Sujets()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -200,9 +183,8 @@ namespace GestionStages.Controllers
 
             if (enseignant == null) return NotFound();
 
-            // Mapper vers SujetViewModel
             var sujets = enseignant.Stages
-                .Where(s => s.Soutenance != null) // éviter null
+                .Where(s => s.Soutenance != null) 
                 .Select(s => new SujetViewModel
                 {
                     Id = s.Soutenance.IdSoutenance,
@@ -216,7 +198,6 @@ namespace GestionStages.Controllers
             return View(sujets);
         }
 
-        // ----------- Soutenances -----------
         public IActionResult Soutenances()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -249,7 +230,6 @@ namespace GestionStages.Controllers
 
 
 
-        // ----------- Liste des étudiants suivis par l’enseignant -----------
         [Route("Enseignant/Etudiants")]
         public IActionResult MesEtudiants()
         {
@@ -260,7 +240,6 @@ namespace GestionStages.Controllers
             var enseignant = _context.Enseignants.FirstOrDefault(e => e.UtilisateurId == userId);
             if (enseignant == null) return NotFound();
 
-            // Projection directe dans le ViewModel pour éviter les SqlNullValueException
             var etudiants = _context.Stages
                 .Where(s => s.EnseignantId == enseignant.IdEnseignant)
                 .Select(s => new MesEtudiantsViewModel
@@ -290,26 +269,22 @@ namespace GestionStages.Controllers
 
 
 
-        // GET: /Enseignant/Rapports
         public IActionResult Rapports()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null) return RedirectToAction("Login", "Auth", new { role = "Enseignant" });
 
-            // Récupère l'enseignant
             var enseignant = _context.Enseignants
                 .FirstOrDefault(e => e.UtilisateurId == userId);
 
             if (enseignant == null) return NotFound();
 
-            // Liste des étudiants (ids) suivis par cet enseignant via les stages
             var etudiantIds = _context.Stages
                 .Where(st => st.EnseignantId == enseignant.IdEnseignant)
                 .Select(st => st.EtudiantId)
                 .Distinct()
                 .ToList();
 
-            // Documents des étudiants encadrés par cet enseignant
             var documents = _context.Documents
     .Include(d => d.Etudiant)
     .Where(d => etudiantIds.Contains(d.EtudiantId))
@@ -328,7 +303,7 @@ namespace GestionStages.Controllers
                 NomFichier = d.NomFichier
             }).ToList();
 
-            return View("Rapports", vm); // crée Views/Enseignant/Rapports.cshtml
+            return View("Rapports", vm); 
         }
         [HttpPost]
         public IActionResult ChangerStatut(int id, string statut)
@@ -354,11 +329,9 @@ namespace GestionStages.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Auth", new { role = "Enseignant" });
 
-            // Récupérer l'enseignant
             var enseignant = _context.Enseignants.FirstOrDefault(e => e.UtilisateurId == userId);
             if (enseignant == null) return NotFound();
 
-            // Vérifier que le document appartient à un étudiant encadré
             var document = _context.Documents
                 .Include(d => d.Etudiant)
                 .FirstOrDefault(d =>
@@ -385,17 +358,14 @@ namespace GestionStages.Controllers
 
         public IActionResult TelechargerRapport(int id)
         {
-            // Vérifier que l'utilisateur est connecté
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
                 return RedirectToAction("Login", "Auth", new { role = "Enseignant" });
 
-            // Récupérer l'enseignant
             var enseignant = _context.Enseignants.FirstOrDefault(e => e.UtilisateurId == userId);
             if (enseignant == null)
                 return NotFound();
 
-            // Récupérer le document
             var document = _context.Documents
                 .Include(d => d.Etudiant)
                 .FirstOrDefault(d => d.IdDocument == id);
@@ -403,27 +373,22 @@ namespace GestionStages.Controllers
             if (document == null)
                 return NotFound("Document introuvable.");
 
-            // Vérifier que c'est un rapport final
             if (document.TypeDocument.Trim().ToLower() != "rapportfinal")
                 return BadRequest("Ce document n'est pas un rapport final.");
 
-            // Vérifier que l'étudiant appartient à cet enseignant
             bool isEncadre = _context.Stages.Any(s => s.EtudiantId == document.EtudiantId
                                                       && s.EnseignantId == enseignant.IdEnseignant);
             if (!isEncadre)
                 return Forbid("Vous n'avez pas la permission de télécharger ce document.");
 
-            // Chemin du fichier sur le serveur
             var filePath = Path.Combine(_env.WebRootPath, "rapports", document.NomFichier);
             if (!System.IO.File.Exists(filePath))
                 return NotFound("Fichier introuvable sur le serveur.");
 
-            // Retourner le fichier
             return PhysicalFile(filePath, "application/pdf", document.NomFichier);
         }
 
 
-        // ----------- Notation des stages -----------
         [HttpGet]
         public IActionResult Notation(string filiere)
         {
@@ -433,10 +398,9 @@ namespace GestionStages.Controllers
             var enseignant = _context.Enseignants.FirstOrDefault(e => e.UtilisateurId == userId);
             if (enseignant == null) return NotFound();
 
-            // 👇 هادي تجيب جميع filières li kaynin f table Etudiants
             ViewBag.Filieres = _context.Etudiants
                 .Select(e => e.Filiere)
-                .Where(f => f != null && f != "") // نحيد null أو فارغ
+                .Where(f => f != null && f != "") 
                 .Distinct()
                 .OrderBy(f => f)
                 .ToList();
@@ -465,8 +429,6 @@ namespace GestionStages.Controllers
             return View(model);
         }
 
-
-        // ----------- Ajouter ou Modifier une note -----------
         [HttpPost]
         [ValidateAntiForgeryToken]
 
@@ -476,7 +438,6 @@ namespace GestionStages.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Auth", new { role = "Enseignant" });
 
-            // vérifier si la soutenance existe
             var soutenance = _context.Soutenances
                 .Include(s => s.Stage)
     .FirstOrDefault(s => s.IdSoutenance == SoutenanceId);
@@ -488,7 +449,6 @@ namespace GestionStages.Controllers
                 TempData["Success"] = "Note ajoutée avec succès.";
             }
 
-            // Redirect avec filière sélectionnée
             return RedirectToAction("Notation", new { filiere });
         }
 
