@@ -1,6 +1,25 @@
 ﻿@{
     Layout = null;
 }
+
+@functions {
+    string IsActive(string controller, string actionKeyword)
+    {
+        var routeData = Context.GetRouteData();
+        var currentController = routeData.Values["controller"]?.ToString();
+        var currentAction = routeData.Values["action"]?.ToString();
+
+        if (!string.Equals(controller, currentController, StringComparison.OrdinalIgnoreCase))
+            return "";
+
+        // ✅ Vérifie si le nom de l’action contient le mot clé
+        return currentAction != null && currentAction.Contains(actionKeyword, StringComparison.OrdinalIgnoreCase)
+            ? "active-sidebar"
+            : "";
+    }
+}
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -47,15 +66,15 @@
                     color: #fff;
                 }
 
-            .sidebar .active {
-                background: #a1887f;
-                color: #fff;
-            }
+        .active-sidebar {
+            background-color: #f5e0c3; /* nude clair */
+            color: #3e2723 !important;
+        }
 
         .topbar {
             height: 60px;
             margin-left: 250px;
-            background: #5d4037; /* Marron moyen */
+            background: #5d4037;
             color: white;
             display: flex;
             align-items: center;
@@ -66,7 +85,7 @@
 
             .topbar .username {
                 font-weight: bold;
-                color: #ffca28; /* Or */
+                color: #ffca28;
             }
 
         .content {
@@ -97,7 +116,7 @@
             }
 
         .bg-light-brown {
-            background-color: #efebe9; /* Marron clair */
+            background-color: #efebe9;
         }
 
         .text-brown {
@@ -119,163 +138,97 @@
                 color: #3e2723;
             }
 
-        .active-sidebar {
-            background-color: #f5e0c3; /* nude clair */
-            color: #3e2723 !important;
+        .form-control {
+            border-radius: 50px;
+            padding-left: 15px;
+            padding-right: 15px;
         }
-
-
     </style>
 </head>
 <body>
 
     <!-- Sidebar -->
-    <!-- Sidebar -->
-    <div>
-
     <nav class="sidebar bg-brown text-white">
-            <h4 class="text-center mb-4"><i class="fas fa-graduation-cap"></i> Admin Panel</h4>
+        <h4 class="text-center mb-4"><i class="fas fa-graduation-cap"></i> Admin Panel</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "Dashboard")" asp-controller="Admin" asp-action="Dashboard">
+                    🏠 Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "Profile")" asp-controller="Admin" asp-action="Profile">
+                    👤 Mon Profil
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "EtudiantsList")" asp-controller="Admin" asp-action="EtudiantsList">
+                    👨‍🎓 Étudiants
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "EnseignantsList")" asp-controller="Admin" asp-action="EnseignantsList">
+                    👩‍🏫 Enseignants
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "DemandesList")" asp-controller="Admin" asp-action="DemandesList">
+                    📨 Demandes
+                </a>
+            </li>
+          
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "SujetList")"
+                   asp-controller="Admin" asp-action="SujetsList"
+                   style='@(IsActive("Admin","SujetsList") == "active-sidebar"
+                                   ? "background-color:#f5e0c3;color:#3e2723;font-weight:600;border-radius:8px;"
+                                   : "")'>
+                    📚 Sujets
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "RapportsList")" asp-controller="Admin" asp-action="RapportsList">
+                    📑 Rapports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-gold @IsActive("Admin", "SoutenanceList")" asp-controller="Admin" asp-action="SoutenanceList">
+                    ⚖️ Soutenances
+                </a>
+            </li>
 
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "Dashboard")" asp-controller="Admin" asp-action="Dashboard">
-                        🏠 Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "Profile")" asp-controller="Admin" asp-action="Profile">
-                        👤 Mon Profil
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "EtudiantsList")" asp-controller="Admin" asp-action="EtudiantsList">
-                        👨‍🎓 Étudiants
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "EnseignantsList")" asp-controller="Admin" asp-action="EnseignantsList">
-                        👩‍🏫 Enseignants
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "SoutenanceList")" asp-controller="Admin" asp-action="SoutenanceList">
-                        ⚖️ Soutenances
-                    </a>
-                </li>
-                @* <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "StagesList")" asp-controller="Admin" asp-action="StagesList">
-                        📂 Stages
-                    </a>
-                </li> *@
+           
+           
 
-                <!-- ✅ Nouveau : Demandes -->
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "DemandesList")" asp-controller="Admin" asp-action="DemandesList">
-                        📨 Demandes
-                    </a>
-                </li>
-
-                <!-- ✅ Nouveau : Rapports -->
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "RapportsList")" asp-controller="Admin" asp-action="RapportsList">
-                        📑 Rapports
-                    </a>
-                </li>
-
-                <!-- ✅ Nouveau : Sujets -->
-                <li class="nav-item">
-                    <a class="nav-link text-gold @IsActive("Admin", "SujetsList")" asp-controller="Admin" asp-action="SujetsList">
-                        📘 Sujets
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-gold" asp-controller="Auth" asp-action="Logout">
-                        🚪 Déconnexion
-                    </a>
-                </li>
-            </ul>
-
-
+            <li class="nav-item">
+                <a class="nav-link text-gold" asp-controller="Auth" asp-action="Logout">
+                    🚪 Déconnexion
+                </a>
+            </li>
+        </ul>
     </nav>
 
-    <script>
-                    @functions {
-                    string IsActive(string controller, string action)
-                    {
-                            var routeData = Context.GetRouteData();
-                            var currentController = routeData.Values["controller"]?.ToString();
-                            var currentAction = routeData.Values["action"]?.ToString();
-
-                            return (string.Equals(controller, currentController, StringComparison.OrdinalIgnoreCase) &&
-                                            string.Equals(action, currentAction, StringComparison.OrdinalIgnoreCase))
-                                            ? "active-sidebar" : "";
-                    }
-            }
-
-    </script>
     <!-- Topbar -->
-        @* <div class="topbar">
-            <span class="fs-5"><i class="fas fa-tachometer-alt"></i> Tableau de Bord</span>
-            <span class="username"><i class="fas fa-user-circle"></i> @ViewBag.AdminName</span>
-        </div> *@
-
-        <!-- Topbar -->
-        <div class="topbar d-flex justify-content-between align-items-center p-3 bg-light-brown shadow-sm">
-            <!-- Left: Dashboard title -->
-            <div class="fs-5 text-brown">
-                <i class="fas fa-tachometer-alt me-2"></i> Tableau de Bord
-            </div>
-
-            <!-- Center: Search bar -->
-            <form class="d-flex flex-grow-1 mx-3" method="get" action="/Admin/Search">
-                <input type="text" name="query" class="form-control rounded-pill px-4" placeholder="🔍 Rechercher..." />
-                <button type="submit" class="btn btn-gold ms-2 rounded-pill">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-
-            <!-- Right: Admin name -->
-            <div class="d-flex align-items-center text-brown">
-                <i class="fas fa-user-circle fa-lg me-2"></i> @ViewBag.AdminName
-            </div>
+    <div class="topbar d-flex justify-content-between align-items-center p-3 bg-light-brown shadow-sm">
+        <div class="fs-5 text-brown">
+            <i class="fas fa-tachometer-alt me-2"></i> Tableau de Bord
         </div>
-
-        <style>
-            .topbar {
-                background-color: #efebe9; /* light brown */
-            }
-
-            .text-brown {
-                color: #5d4037;
-                font-weight: 500;
-            }
-
-            .btn-gold {
-                background-color: #ffca28;
-                color: #3e2723;
-                font-weight: 600;
-                transition: 0.3s;
-            }
-
-                .btn-gold:hover {
-                    background-color: #ffc107;
-                    color: #3e2723;
-                }
-
-            .form-control {
-                border-radius: 50px;
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-        </style>
-
+        <form class="d-flex flex-grow-1 mx-3" method="get" action="/Admin/Search">
+            <input type="text" name="query" class="form-control rounded-pill px-4" placeholder="🔍 Rechercher..." />
+            <button type="submit" class="btn btn-gold ms-2 rounded-pill">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+        <div class="d-flex align-items-center text-brown">
+            <i class="fas fa-user-circle fa-lg me-2"></i> @ViewBag.AdminName
+        </div>
+    </div>
 
     <!-- Content -->
     <div class="content">
         @RenderBody()
     </div>
-    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

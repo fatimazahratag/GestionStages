@@ -1,32 +1,145 @@
-﻿@model IEnumerable<GestionStages.Models.Suivi>
+﻿@model IEnumerable<GestionStages.Models.ViewModels.SujetViewModel>
+
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Sujets";
+    ViewData["Title"] = "Liste des Sujets";
 }
 
-<h3 class="mb-4">Liste des sujets</h3>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<table class="table table-striped table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>Titre du sujet</th>
-            <th>Description</th>
-            <th>Enseignant</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var sujet in Model)
-        {
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color:#a87c4f;">
+            <i class="fas fa-book"></i> Liste des Sujets
+        </h2>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <table class="table table-hover shadow-sm rounded" style="background-color: #fff; border:2px solid #a87c4f;">
+        <thead style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
             <tr>
-                @* <td>@sujet.Titre</td>
-                <td>@sujet.Description</td> *@
-                <td>@sujet.Enseignant.NomEnseignant</td>
-                <td>
-                    @* <a class="btn btn-sm btn-primary" asp-action="EditSujet" asp-route-id="@sujet.IdSujet">Modifier</a>
-                    <a class="btn btn-sm btn-danger" asp-action="SupprimerSujet" asp-route-id="@sujet.IdSujet">Supprimer</a> *@
-                </td>
+                <th>Étudiant</th>
+                <th>Encadrant</th>
+                <th>Sujet</th>
+                <th>Description</th>
+                <th>Statut</th>
+                <th>Note</th>
+                <th class="text-center">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.NomEtudiant</td>
+                    <td>@s.NomEncadrant</td>
+                    <td>@s.NomSujet</td>
+                    <td>@s.DescriptionSujet</td>
+                    <td>
+                        @if (s.StatutSujet == "Validé")
+                        {
+                            <span class="badge bg-success">Validé</span>
+                        }
+                        else if (s.StatutSujet == "Refusé")
+                        {
+                            <span class="badge bg-danger">Refusé</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">En attente</span>
+                        }
+                    </td>
+
+                    <!-- Note -->
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="number" step="0.01" class="note-input form-control form-control-sm"
+                                   data-id="@s.IdSoutenance" value="@(s.Note.HasValue? s.Note.Value.ToString("0.00") : "")"
+                                   style="width:70px;" />
+                            <button type="button" class="btn btn-sm" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;"
+                                    data-id="@s.IdSoutenance" class="update-note">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </div>
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                        <div class="d-flex align-items-center gap-2 justify-content-center">
+                            <!-- Affecter encadrant -->
+                            <form asp-action="AffecterEncadrant" method="post" class="d-flex gap-1">
+                                <input type="hidden" name="idSoutenance" value="@s.IdSoutenance" />
+                                <select name="idEnseignant" class="form-select form-select-sm">
+                                    <option value="">Choisir</option>
+                                    @if (ViewBag.Enseignants != null)
+                                    {
+                                        foreach (var e in ViewBag.Enseignants)
+                                        {
+                                            var ens = e as GestionStages.Models.Enseignant;
+                                            if (ens != null && ens.Stages.Count < 4)
+                                            {
+                                                <option value="@ens.IdEnseignant">@ens.NomEnseignant (@ens.Stages.Count/4)</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-sm" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
+                                    <i class="fa-solid fa-chalkboard-user"></i>
+                                </button>
+                            </form>
+
+                            <!-- Supprimer -->
+                            <form asp-action="SupprimerSujet" method="post">
+                                <input type="hidden" name="idSoutenance" value="@s.IdSoutenance" />
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Voulez-vous supprimer ce sujet ?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.update-note').click(function(){
+            var idSoutenance = $(this).data('id');
+            var note = $('input.note-input[data-id="'+idSoutenance+'"]').val();
+
+            $.ajax({
+                url: '@Url.Action("ModifierNote")',
+                type: 'POST',
+                data: { idSoutenance: idSoutenance, NoteFinale: note },
+                success: function(response){
+                    var row = $('input.note-input[data-id="'+idSoutenance+'"]').closest('tr');
+                    var badge = row.find('td').eq(4).find('span');
+                    if(note === "" || note === null){
+                        badge.text('En attente').removeClass().addClass('badge bg-warning text-dark');
+                    } else if(parseFloat(note) < 12){
+                        badge.text('Refusé').removeClass().addClass('badge bg-danger');
+                    } else {
+                        badge.text('Validé').removeClass().addClass('badge bg-success');
+                    }
+                },
+                error: function(){
+                    alert('Erreur lors de la mise à jour.');
+                }
+            });
+        });
+    });
+</script>

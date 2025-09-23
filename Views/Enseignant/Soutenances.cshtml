@@ -1,0 +1,77 @@
+﻿@model IEnumerable<GestionStages.Models.ViewModels.SoutenanceViewModel>
+
+@{
+    Layout = "_LayoutEnseignant";
+    ViewData["Title"] = "Mes Soutenances";
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold mb-4" style="color:#a87c4f;">
+        <i class="fas fa-graduation-cap"></i> Mes Soutenances
+    </h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info shadow-sm rounded">
+            Aucune soutenance trouvée.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded" style="background:#fff; border:2px solid #a87c4f;">
+            <table class="table table-hover align-middle mb-0" style="border-radius:12px; overflow:hidden;">
+                <thead style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
+                    <tr>
+                        <th>Sujet</th>
+                        <th>Étudiant</th>
+                        <th>Date</th>
+                        <th>Salle</th>
+                        <th>Jury</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model)
+                    {
+                        <tr style="transition: background 0.3s;">
+                            <td>@s.SujetTitre</td>
+                            <td>@s.EtudiantNom</td>
+                            <td>
+                                <span class="badge bg-light text-dark border" style="font-size:0.9rem;">
+                                    @s.Date.ToString("dd/MM/yyyy")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary" style="font-size:0.9rem;">
+                                    @s.Salle
+                                </span>
+                            </td>
+                            <td>@s.Jury</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<style>
+    body {
+        background-color: #f9f7f1;
+        font-family: 'Segoe UI', sans-serif;
+        color: #333;
+    }
+
+    table th, table td {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+
+    table tbody tr:hover {
+        background-color: #fff4e6 !important;
+    }
+
+    .badge {
+        border-radius: 50px;
+        padding: 0.4em 0.8em;
+    }
+</style>

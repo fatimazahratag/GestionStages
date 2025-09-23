@@ -1,0 +1,119 @@
+﻿@model List<GestionStages.Models.ViewModels.NotationViewModel>
+@{
+    Layout = "_LayoutEnseignant";
+    ViewData["Title"] = "Notation des étudiants";
+}
+
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4" style="color:#a87c4f;"> Saisie des notes des étudiants</h2>
+
+    <!-- Filtre par filière -->
+    <form method="get" asp-action="Notation" class="mb-4">
+        <select name="filiere" class="form-select form-select-sm w-auto d-inline-block" onchange="this.form.submit()">
+            <option value="">-- Choisir une filière --</option>
+            @foreach (var f in ViewBag.Filieres as List<string>)
+            {
+                <option value="@f" selected="@(f == (ViewBag.SelectedFiliere as string))">@f</option>
+            }
+        </select>
+    </form>
+
+    @if (!string.IsNullOrEmpty(ViewBag.SelectedFiliere as string) && Model.Any())
+    {
+        <table class="table table-hover shadow-sm rounded" style="background-color:#fff; border:2px solid #a87c4f;">
+            <thead style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
+                <tr>
+                    <th>Étudiant</th>
+                    <th>Filière</th>
+                    <th>Sujet</th>
+                    <th>Note</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var etu in Model)
+                {
+                    <tr>
+                        <td>@etu.EtudiantNom</td>
+                        <td>@etu.Filiere</td>
+                        <td>@etu.SujetTitre</td>
+                        <td>
+                            <input type="number" id="note_@etu.SoutenanceId"
+                                   value="@(etu.Note.HasValue? etu.Note.Value.ToString("0.##") : "")"
+                                   min="0" max="20" class="form-control form-control-sm rounded-pill text-center" />
+                        </td>
+                        <td class="text-center">
+                            <form asp-controller="Enseignant" asp-action="EnregistrerNote" method="post" class="d-inline-flex gap-1 align-items-center">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="SoutenanceId" value="@etu.SoutenanceId" />
+                                <input type="hidden" name="Note" id="hiddenNote_@etu.SoutenanceId" />
+                                <input type="hidden" name="filiere" value="@ViewBag.SelectedFiliere" />
+                                <button type="submit" class="btn btn-sm px-3"
+                                        style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white; border-radius:50px; font-weight:500;"
+                                        onmouseover="this.style.opacity='0.85';"
+                                        onmouseout="this.style.opacity='1';"
+                                        onclick="document.getElementById('hiddenNote_@etu.SoutenanceId').value = document.getElementById('note_@etu.SoutenanceId').value">
+                                    @(etu.Note.HasValue ? "Modifier" : "Ajouter")
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (!string.IsNullOrEmpty(ViewBag.SelectedFiliere as string))
+    {
+        <p class="text-muted">Aucun étudiant trouvé pour cette filière.</p>
+    }
+</div>
+
+<style>
+    body {
+        background-color: #f9f7f1;
+        font-family: 'Segoe UI', sans-serif;
+        color: #333;
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+    }
+
+        table tbody tr:hover {
+            background-color: #fff4e6 !important;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+    .form-select-sm {
+        min-width: 150px;
+        border-radius: 50px;
+        border: 1px solid #ccc;
+        padding: 4px 10px;
+    }
+
+    input[type=number] {
+        border: 1px solid #ccc;
+        width: 70px;
+    }
+
+    .btn-sm {
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .btn-sm:hover {
+            opacity: 0.85;
+        }
+</style>

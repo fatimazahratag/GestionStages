@@ -1,0 +1,144 @@
+﻿@model GestionStages.Models.Enseignant
+@{
+    Layout = "_LayoutEnseignant";
+    ViewData["Title"] = "Tableau de bord - Encadrant";
+
+    var filieres = ViewBag.Filieres as List<string> ?? new List<string>();
+    var stagesCount = ViewBag.StageCountsByFiliere != null
+        ? new List<int>(ViewBag.StageCountsByFiliere.Values)
+        : new List<int>();
+    var docsStatus = ViewBag.DocsStatus as int[] ?? new int[] { 0, 0, 0 };
+}
+
+<div class="container-fluid mt-4">
+
+    <!-- Header -->
+    <div class="row mb-4 text-center">
+        <div class="col-md-12">
+            <h2>👋 Bonjour, @Model.NomEnseignant</h2>
+            <p class="lead text-secondary">Bienvenue sur votre tableau de bord</p>
+        </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm bg-light-brown p-3">
+                <i class="fas fa-chalkboard-teacher fa-2x text-gold mb-1"></i>
+                <h6 class="fw-semibold">Soutenances</h6>
+                <p class="h4 m-0">@ViewBag.TotalSoutenances</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm bg-light-brown p-3">
+                <i class="fas fa-user-graduate fa-2x text-gold mb-1"></i>
+                <h6 class="fw-semibold">Étudiants suivis</h6>
+                <p class="h4 m-0">@ViewBag.TotalEtudiants</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm bg-light-brown p-3">
+                <i class="fas fa-file-alt fa-2x text-gold mb-1"></i>
+                <h6 class="fw-semibold">Rapports récents</h6>
+                <p class="h4 m-0">@((ViewBag.RecentDocuments as List<GestionStages.Models.Document>)?.Count ?? 0)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-4 mt-5 text-center">
+        <div class="col-md-4">
+            <h6>Étudiants par filière</h6>
+            <canvas id="chartEtudiants" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-4">
+            <h6>Stages par filière</h6>
+            <canvas id="chartStages" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-4">
+            <h6>Documents par statut</h6>
+            <canvas id="chartDocuments" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Reports Table -->
+    <h4 class="text-brown mt-4">📋 Derniers rapports</h4>
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm rounded mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Étudiant</th>
+                    <th>Type Document</th>
+                    <th>Statut</th>
+                    <th>Date dépôt</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in ViewBag.RecentDocuments as List<GestionStages.Models.Document> ?? new List<GestionStages.Models.Document>())
+                {
+                    <tr>
+                        <td>@(d.Etudiant?.NomComplet ?? "Non disponible")</td>
+                        <td>@(d.TypeDocument ?? "Non disponible")</td>
+                        <td>@(d.Statut ?? "Non disponible")</td>
+                        <td>@(d.DateDepot != default(DateTime) ? d.DateDepot.ToShortDateString() : "Non disponible")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.onload = function() {
+        const filieresData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(filieres));
+        const stagesData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(stagesCount));
+        const docsData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(docsStatus));
+
+        new Chart(document.getElementById('chartEtudiants'), {
+            type: 'doughnut',
+            data: { labels: filieresData, datasets: [{ data: stagesData, backgroundColor: ['#8d6e63','#a1887f','#d7ccc8','#ffb74d','#90caf9'], borderColor: '#fff', borderWidth: 2 }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } }, animation: { animateRotate: true, animateScale: true } }
+        });
+
+        new Chart(document.getElementById('chartStages'), {
+            type: 'bar',
+            data: { labels: filieresData, datasets: [{ label: 'Stages', data: stagesData, backgroundColor: '#ffca28' }] },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        new Chart(document.getElementById('chartDocuments'), {
+            type: 'pie',
+            data: { labels: ['En attente','En préparation','Prêt'], datasets: [{ data: docsData, backgroundColor: ['#f0ad4e','#4b3b2b','#d9534f'] }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+</script>
+
+<style>
+    body {
+        background-color: #f9f7f1;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .text-gold {
+        color: #d4af37;
+    }
+
+    .text-brown {
+        color: #4b3b2b;
+    }
+
+    .bg-light-brown {
+        background-color: #f5f0e6;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #fff4e6;
+    }
+</style>

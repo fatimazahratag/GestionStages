@@ -13,5 +13,12 @@ namespace GestionStages.Models.ViewModels
 
         // ✅ liste rapports pour affichage
         public List<Document> ListeRapports { get; set; } = new List<Document>();
+        public int Id { get; set; }              // IdDocument
+        public string Titre { get; set; }        // nom ou titre du document
+        public int EtudiantId { get; set; }
+        public string EtudiantNom { get; set; }
+        public string Statut { get; set; }       // Ex: "En attente", "Validé"
+        public DateTime? DateDepot { get; set; }
+        public string NomFichier { get; set; }   // nom du fichier si stocké
     }
 }

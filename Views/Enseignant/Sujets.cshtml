@@ -1,0 +1,47 @@
+﻿@model IEnumerable<GestionStages.Models.ViewModels.SujetViewModel>
+
+@{
+    Layout = "_LayoutEnseignant";
+    ViewData["Title"] = "Mes Sujets Encadrés";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">📚 Mes Sujets Encadrés</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Titre</th>
+                <th>Étudiant</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sujet in Model)
+            {
+                <tr>
+                    <td>@sujet.Titre</td>
+                    <td>@sujet.EtudiantNom</td>
+                    <td>
+                        @if (sujet.Statut == "Validé")
+                        {
+                            <span class="badge bg-success">Validé</span>
+                        }
+                        else if (sujet.Statut == "Refusé")
+                        {
+                            <span class="badge bg-danger">Refusé</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">En cours</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("SujetDetails", "Encadrant", new { id = sujet.Id })" class="btn btn-sm btn-info">Voir</a>
+                        <a href="@Url.Action("Notation", "Encadrant", new { id = sujet.Id })" class="btn btn-sm btn-primary">Noter</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

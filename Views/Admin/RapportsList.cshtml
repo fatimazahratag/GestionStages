@@ -5,27 +5,29 @@
     var globalDeadline = Model.FirstOrDefault(d => d.TypeDocument == "Rapport Final")?.DateLimiteRapportFinal;
 }
 
-<h2 class="mb-4" style="color:#4b3b2b;"><i class="fas fa-file-alt"></i> Rapports Finaux</h2>
+<h2 class="fw-bold mb-4" style="color:#a87c4f;"><i class="fas fa-file-alt"></i> Rapports Finaux</h2>
 
 <!-- Global Deadline Form -->
 <form asp-action="SetGlobalDeadline" method="post" class="mb-4 d-flex align-items-center gap-2">
     @Html.AntiForgeryToken()
     <label>📅 Date limite pour tous les rapports finaux :</label>
     <input type="date" name="deadline"
-           value="@Model.FirstOrDefault(d => d.TypeDocument == "Rapport Final")?.DateLimiteRapportFinal?.ToString("yyyy-MM-dd")"
-           class="form-select-sm" />
-    <button type="submit" class="btn-status">💾 Enregistrer</button>
+           value="@globalDeadline?.ToString("yyyy-MM-dd")"
+           class="form-control form-control-sm w-auto" />
+    <button type="submit" class="btn btn-sm" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white; border-radius:50px;">
+        💾 Enregistrer
+    </button>
 </form>
 
-<table class="table table-hover shadow-sm rounded" style="background-color:#fff; border:1px solid #e0e0e0;">
-    <thead style="background-color:#4b3b2b; color:white;">
+<table class="table table-hover shadow-sm rounded" style="background-color:#fff; border:2px solid #a87c4f;">
+    <thead style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
         <tr>
             <th>Étudiant</th>
             <th>Type Document</th>
             <th>Date dépôt</th>
             <th>Date Limite</th>
             <th>Statut</th>
-            <th>Actions</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -38,20 +40,30 @@
                 <td>@r.DateDepot.ToShortDateString()</td>
                 <td>@r.DateLimiteRapportFinal?.ToShortDateString()</td>
                 <td>
-                    <form asp-action="ChangerStatutRapport" method="post" class="d-flex align-items-center gap-2">
-                        <input type="hidden" name="id" value="@r.IdDocument" />
-                        <select name="statut" class="form-select-sm">
-                            <option value="Soumis" selected="@("Soumis" == r.Statut)">Soumis</option>
-                            <option value="Accepté" selected="@("Accepté" == r.Statut)">Accepté</option>
-                            <option value="Refusé" selected="@("Refusé" == r.Statut)">Refusé</option>
-                        </select>
-                        <button type="submit" class="btn-status"><i class="fas fa-check"></i></button>
-                    </form>
+                    <span class="badge @(r.Statut == "Accepté" ? "bg-success" : r.Statut == "Refusé" ? "bg-danger" : "bg-warning text-dark")">
+                        @r.Statut
+                    </span>
                 </td>
                 <td>
-                    <a asp-action="GenererDocument" asp-route-id="@r.IdDocument" class="btn-pdf mb-1">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <!-- Changer statut -->
+                        <form asp-action="ChangerStatutRapport" method="post" class="d-flex gap-1">
+                            <input type="hidden" name="id" value="@r.IdDocument" />
+                            <select name="statut" class="form-select form-select-sm">
+                                <option value="Soumis" selected="@("Soumis" == r.Statut)">Soumis</option>
+                                <option value="Accepté" selected="@("Accepté" == r.Statut)">Accepté</option>
+                                <option value="Refusé" selected="@("Refusé" == r.Statut)">Refusé</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white; border-radius:50px;">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+
+                        <!-- Générer PDF -->
+                        <a asp-action="GenererDocument" asp-route-id="@r.IdDocument" class="btn btn-sm" style="background-color:#d9534f; color:white; border-radius:50px;">
+                            <i class="fas fa-file-pdf"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         }
@@ -82,45 +94,23 @@
 
         table th, table td {
             padding: 12px 15px;
-            text-align: left;
             vertical-align: middle;
         }
 
     .form-select-sm {
         min-width: 130px;
-        border-radius: 8px;
+        border-radius: 50px;
         border: 1px solid #ccc;
-        padding: 4px 8px;
+        padding: 4px 10px;
     }
-
-    /* Buttons */
-    .btn-status {
-        background-color: #4b3b2b;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-        .btn-status:hover {
-            background-color: #6b5040;
-            color: #fff;
-        }
-
-    .btn-pdf {
-        background-color: #d9534f;
-        color: white;
-        border-radius: 8px;
-        padding: 5px 10px;
-        font-size: 0.9rem;
-    }
-
-        .btn-pdf:hover {
-            background-color: #c9302c;
-        }
 
     .table-danger {
         background-color: #f8d7da !important;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4em 0.6em;
+        border-radius: 12px;
     }
 </style>

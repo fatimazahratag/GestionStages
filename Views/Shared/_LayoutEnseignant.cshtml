@@ -1,1 +1,165 @@
-﻿
+﻿@{
+    Layout = null;
+}
+
+@functions {
+    string IsActive(string controller, string actionKeyword)
+    {
+        var routeData = Context.GetRouteData();
+        var currentController = routeData.Values["controller"]?.ToString();
+        var currentAction = routeData.Values["action"]?.ToString();
+
+        if (!string.Equals(controller, currentController, StringComparison.OrdinalIgnoreCase))
+            return "";
+
+        return currentAction != null && currentAction.Contains(actionKeyword, StringComparison.OrdinalIgnoreCase)
+            ? "active-sidebar"
+            : "";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Espace Enseignant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f7f5;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #3e2723;
+            color: white;
+            padding-top: 20px;
+            transition: all 0.3s;
+        }
+
+            .sidebar a {
+                color: #d7ccc8;
+                text-decoration: none;
+                display: block;
+                padding: 12px 20px;
+                border-radius: 8px;
+                margin: 5px 10px;
+                transition: background 0.2s;
+            }
+
+                .sidebar a:hover {
+                    background: #6d4c41;
+                    color: #fff;
+                }
+
+        .active-sidebar {
+            background-color: #f5e0c3;
+            color: #3e2723 !important;
+        }
+
+        .topbar {
+            height: 60px;
+            margin-left: 250px;
+            background: #5d4037;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .btn-gold {
+            background-color: #d4af37;
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+            .btn-gold:hover {
+                background-color: #b8952a;
+                color: white;
+            }
+
+        .topbar input.form-control {
+            width: 200px;
+            border-radius: 50px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .badge-notif {
+            position: absolute;
+            top: 0;
+            start: 100%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <h4 class="text-center mb-4"><i class="fas fa-chalkboard-teacher"></i> Enseignant</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link text-gold @IsActive("Enseignant", "Dashboard")" asp-controller="Enseignant" asp-action="Dashboard">🏠 Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link text-gold @IsActive("Enseignant", "Profil")" asp-controller="Enseignant" asp-action="Profil">👤 Mon Profil</a></li>
+            <li class="nav-item"><a class="nav-link text-gold @IsActive("Enseignant", "Etudiants")" asp-controller="Enseignant" asp-action="Etudiants">🎓 Mes Étudiants</a></li>
+            <li class="nav-item"><a class="nav-link text-gold @IsActive("Enseignant", "Soutenances")" asp-controller="Enseignant" asp-action="Soutenances">⚖️ Soutenances</a></li>
+            <li class="nav-item"><a class="nav-link text-gold @IsActive("Enseignant", "Rapports")" asp-controller="Enseignant" asp-action="Rapports">📑 Rapports</a></li>
+            <li class="nav-item"><a class="nav-link text-gold @IsActive("Enseignant", "Notation")" asp-controller="Enseignant" asp-action="Notation">📝 Notation</a></li>
+            <li class="nav-item"><a class="nav-link text-gold" asp-controller="Auth" asp-action="Logout">🚪 Déconnexion</a></li>
+        </ul>
+    </nav>
+
+    <!-- Topbar -->
+    <div class="topbar d-flex justify-content-between align-items-center p-3 bg-light-brown shadow-sm">
+
+        <!-- Left: Dashboard title -->
+
+        <!-- Center: Search bar -->
+        <form class="d-flex me-4" role="search" method="get" asp-controller="Enseignant" asp-action="Search">
+            <input class="form-control form-control-sm" type="search" name="query" placeholder="Rechercher..." aria-label="Search" style="width: 250px;">
+            <button class="btn btn-sm btn-gold ms-2" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+
+
+        <!-- Right: Notifications + User -->
+        <div class="d-flex align-items-center text-brown">
+            <!-- Notification icon -->
+            <div class="position-relative me-3">
+                <i class="fas fa-bell fa-lg"></i>
+                @if (ViewBag.NotificationCount > 0)
+                {
+                    <span class="badge rounded-pill bg-danger badge-notif">@ViewBag.NotificationCount</span>
+                }
+            </div>
+            <!-- User -->
+            <i class="fas fa-user-circle fa-lg me-2"></i> @ViewBag.EnseignantName
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        @RenderBody()
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+﻿@model IEnumerable<GestionStages.Models.ViewModels.RapportViewModel>
+
+@{
+    Layout = "_LayoutEnseignant";
+    ViewData["Title"] = "Rapports des étudiants";
+}
+
+<h2 class="fw-bold mb-4" style="color:#a87c4f;"><i class="fas fa-file-alt"></i> Rapports des étudiants</h2>
+
+<table class="table table-hover shadow-sm rounded" style="background-color:#fff; border:2px solid #a87c4f;">
+    <thead style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
+        <tr>
+            <th>Étudiant</th>
+            <th>Document</th>
+            <th>Date dépôt</th>
+            <th>Statut</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            var isLate = r.DateDepot.HasValue && r.DateDepot > r.DateDepot; // ou si tu as une DateLimite
+                                                                            <tr class="@(isLate ? "table-danger" : "")">
+                                                                                <td>@r.EtudiantNom</td>
+                                                                                <td>@r.Titre</td>
+                                                                                <td>@(r.DateDepot?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                                                                <td>
+                                                                                    <span class="badge @(r.Statut == "Accepté" ? "bg-success" : r.Statut == "Refusé" ? "bg-danger" : "bg-warning text-dark")">
+                                                                                        @r.Statut
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="d-flex gap-2 justify-content-center">
+                                                                                        <!-- Télécharger -->
+                                                                                        <a asp-action="Telecharger" asp-route-id="@r.Id" class="btn btn-sm" style="background-color:#F2EAD3; color:white; border-radius:50px;">
+                                                                                            📥 
+                                                                                        </a>
+
+                        <!-- Changer statut -->
+                        <form asp-action="ChangerStatut" method="post" class="d-flex gap-1">
+                            <input type="hidden" name="id" value="@r.Id" />
+                            <select name="statut" class="form-select form-select-sm">
+                                <option value="Prêt" selected="@("Prêt" == r.Statut)">Prêt</option>
+                                <option value="Accepté" selected="@("Accepté" == r.Statut)">Accepté</option>
+                                <option value="Refusé" selected="@("Refusé" == r.Statut)">Refusé</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white; border-radius:50px;">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    body {
+        background-color: #f9f7f1;
+        font-family: 'Segoe UI', sans-serif;
+        color: #333;
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+    }
+
+        table tbody tr:hover {
+            background-color: #fff4e6 !important;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+    .form-select-sm {
+        min-width: 130px;
+        border-radius: 50px;
+        border: 1px solid #ccc;
+        padding: 4px 10px;
+    }
+
+    .table-danger {
+        background-color: #f8d7da !important;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4em 0.6em;
+        border-radius: 12px;
+    }
+</style>

@@ -928,13 +928,127 @@ namespace GestionStages.Controllers
 
 
         //---------
+        //public IActionResult SujetsList()
+        //{
+        //    var sujets = _context.Suivis
+        //                  .Include(s => s.Enseignant)
+        //                  .ToList();
+        //    return View(sujets);
+        //}
+        // ✅ Liste des sujets
+        // GET: Liste des sujets
+        [HttpGet]
         public IActionResult SujetsList()
         {
-            var sujets = _context.Suivis
-                          .Include(s => s.Enseignant)
-                          .ToList();
+            var sujets = _context.Soutenances
+                .Include(s => s.Stage)
+                    .ThenInclude(st => st.Etudiant)
+                .Include(s => s.Stage)
+                    .ThenInclude(st => st.Enseignant)
+                .Select(s => new SujetViewModel
+                {
+                    IdSoutenance = s.IdSoutenance,
+                    NomEtudiant = s.Stage.Etudiant.NomComplet,
+                    NomEncadrant = s.Stage.Enseignant != null ? s.Stage.Enseignant.NomEnseignant : "Non affecté",
+                    NomSujet = s.NomSujet ?? "",
+                    DescriptionSujet = s.DescriptionSujet ?? "",
+                    StatutSujet = s.StatutSujet ?? "En attente",
+                    Note = s.NoteFinale.HasValue ? (decimal?)s.NoteFinale.Value : null
+                })
+                .ToList();
+
+            // 🔹 Remplir les enseignants pour le dropdown
+            ViewBag.Enseignants = _context.Enseignants
+                .Include(e => e.Stages)
+                .ToList();
+
             return View(sujets);
         }
+
+
+
+
+
+        // POST: Affecter encadrant
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AffecterEncadrant(int idSoutenance, int idEnseignant)
+        {
+            // Charger la soutenance avec son Stage et l'Etudiant
+            var soutenance = _context.Soutenances
+                .Include(s => s.Stage)
+                    .ThenInclude(st => st.Etudiant) // ⚡ Important pour éviter le null
+                .FirstOrDefault(s => s.IdSoutenance == idSoutenance);
+
+            if (soutenance == null || soutenance.Stage == null || soutenance.Stage.Etudiant == null)
+            {
+                TempData["Error"] = "Soutenance ou Stage non trouvé.";
+                return RedirectToAction("SujetsList");
+            }
+
+            var enseignant = _context.Enseignants
+                .Include(e => e.Stages)
+                .FirstOrDefault(e => e.IdEnseignant == idEnseignant);
+
+            if (enseignant == null)
+            {
+                TempData["Error"] = "Enseignant non trouvé.";
+                return RedirectToAction("SujetsList");
+            }
+
+            // Vérifier max 4 étudiants par enseignant
+            int nbEtudiants = enseignant.Stages.Count;
+            if (nbEtudiants >= 4)
+            {
+                TempData["Error"] = $"L'enseignant {enseignant.NomEnseignant} a déjà 4 étudiants.";
+                return RedirectToAction("SujetsList");
+            }
+
+            // Affecter l'enseignant
+            soutenance.Stage.EnseignantId = idEnseignant;
+            _context.SaveChanges();
+
+            TempData["Success"] = $"✅ {enseignant.NomEnseignant} a été affecté à {soutenance.Stage.Etudiant.NomComplet}.";
+            return RedirectToAction("SujetsList");
+        }
+
+
+        // GET: Supprimer sujet
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SupprimerSujet(int idSoutenance)
+        {
+            var s = _context.Soutenances.Find(idSoutenance);
+            if (s != null)
+            {
+                _context.Soutenances.Remove(s);
+                _context.SaveChanges();
+                TempData["Success"] = "✅ Sujet supprimé avec succès.";
+            }
+            return RedirectToAction("SujetsList");
+        }
+
+        [HttpPost]
+        public IActionResult ModifierNote(int idSoutenance, decimal? NoteFinale)
+        {
+            var soutenance = _context.Soutenances
+                                .FirstOrDefault(s => s.IdSoutenance == idSoutenance);
+
+            if (soutenance == null)
+                return Json(new { success = false });
+
+            soutenance.NoteFinale = NoteFinale.HasValue ? (double?)NoteFinale.Value : null;
+
+            if (NoteFinale.HasValue)
+                soutenance.StatutSujet = NoteFinale.Value < 12 ? "Refusé" : "Validé";
+            else
+                soutenance.StatutSujet = "En attente";
+
+            _context.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
 
 
 
