@@ -58,24 +58,23 @@
                             <span class="badge bg-warning text-dark">En attente</span>
                         }
                     </td>
-
                     <td>
                         <div class="d-flex align-items-center gap-2">
                             <input type="number" step="0.01" class="note-input form-control form-control-sm"
                                    data-id="@s.IdSoutenance" value="@(s.Note.HasValue? s.Note.Value.ToString("0.00") : "")"
                                    style="width:70px;" />
-                            <button type="button" class="btn btn-sm" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;"
-                                    data-id="@s.IdSoutenance" class="update-note">
+                            <button type="button" class="btn btn-sm update-note" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;"
+                                    data-id="@s.IdSoutenance">
                                 <i class="fa-solid fa-check"></i>
                             </button>
                         </div>
                     </td>
-
                     <td>
                         <div class="d-flex align-items-center gap-2 justify-content-center">
                             <form asp-action="AffecterEncadrant" method="post" class="d-flex gap-1">
                                 <input type="hidden" name="idSoutenance" value="@s.IdSoutenance" />
-                                <select name="idEnseignant" class="form-select form-select-sm">
+                                <select name="idEnseignant" class="form-select form-select-sm"
+                                        @(string.IsNullOrEmpty(s.NomEncadrant) ? "" : "disabled")>
                                     <option value="">Choisir</option>
                                     @if (ViewBag.Enseignants != null)
                                     {
@@ -89,7 +88,9 @@
                                         }
                                     }
                                 </select>
-                                <button type="submit" class="btn btn-sm" style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;">
+                                <button type="submit" class="btn btn-sm"
+                                        style="background: linear-gradient(45deg, #a87c4f, #f4d8b4); color:white;"
+                                        @(string.IsNullOrEmpty(s.NomEncadrant) ? "" : "disabled")>
                                     <i class="fa-solid fa-chalkboard-user"></i>
                                 </button>
                             </form>
@@ -112,28 +113,24 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $('.update-note').click(function(){
-            var idSoutenance = $(this).data('id');
-            var note = $('input.note-input[data-id="'+idSoutenance+'"]').val();
+    $(document).ready(function () {
+        $(".update-note").click(function () {
+            var id = $(this).data("id");
+            var note = $(this).closest("tr").find(".note-input").val();
 
             $.ajax({
-                url: '@Url.Action("ModifierNote")',
+                url: '@Url.Action("ModifierNote", "Admin")',
                 type: 'POST',
-                data: { idSoutenance: idSoutenance, NoteFinale: note },
-                success: function(response){
-                    var row = $('input.note-input[data-id="'+idSoutenance+'"]').closest('tr');
-                    var badge = row.find('td').eq(4).find('span');
-                    if(note === "" || note === null){
-                        badge.text('En attente').removeClass().addClass('badge bg-warning text-dark');
-                    } else if(parseFloat(note) < 12){
-                        badge.text('Refusé').removeClass().addClass('badge bg-danger');
-                    } else {
-                        badge.text('Validé').removeClass().addClass('badge bg-success');
-                    }
+                data: {
+                    idSoutenance: id,
+                    NoteFinale: note
                 },
-                error: function(){
-                    alert('Erreur lors de la mise à jour.');
+                success: function (response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert("Erreur lors de la mise à jour de la note.");
+                    }
                 }
             });
         });
