@@ -416,15 +416,16 @@ namespace GestionStages.Controllers
                 query = query.Where(st => st.Etudiant.Filiere == filiere);
 
             var model = query
-                .Select(st => new NotationViewModel
-                {
-                    SoutenanceId = st.Soutenance.IdSoutenance,
-                    EtudiantNom = st.Etudiant.NomComplet,
-                    Filiere = st.Etudiant.Filiere,
-                    SujetTitre = st.Soutenance.NomSujet,
-                    Note = st.Soutenance.NoteFinale
-                })
-                .ToList();
+       .Where(st => st.Soutenance != null) 
+       .Select(st => new NotationViewModel
+       {
+           SoutenanceId = st.Soutenance.IdSoutenance,
+           EtudiantNom = st.Etudiant.NomComplet,
+           Filiere = st.Etudiant.Filiere,
+           SujetTitre = st.Soutenance.NomSujet ?? "Sujet non défini",
+           Note = st.Soutenance.NoteFinale 
+       })
+       .ToList();
 
             return View(model);
         }
